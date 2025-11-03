@@ -1,0 +1,217 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Parisienne&display=swap");
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(to bottom, #000000, #262424, #ba7183, #ffe4ec);
+  font-family: "Montserrat", sans-serif;
+  text-align: center;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  position: relative;
+}
+
+/* Glowing background */
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(100px);
+  z-index: 0;
+}
+body::before {
+  width: 300px;
+  height: 300px;
+  background: #ffb3c6;
+  top: 10%;
+  left: 5%;
+  opacity: 0.35;
+}
+body::after {
+  width: 200px;
+  height: 200px;
+  background: #f8a6be;
+  bottom: 10%;
+  right: 10%;
+  opacity: 0.25;
+}
+
+/* Shared Container Style */
+.container,
+.journey-container {
+  position: relative;
+  max-width: 720px;
+  margin: 0 auto 60px;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(30px);
+  border-radius: 24px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 1;
+}
+
+/* Titles */
+h1 {
+  font-family: "Parisienne", cursive;
+  font-size: 4.5rem;
+  color: #ffe4ec;
+  text-shadow: 0 0 15px rgba(255, 192, 203, 0.7);
+  margin-bottom: 1.2rem;
+  animation: fadeInTitle 2s ease-in-out;
+}
+.subtitle {
+  font-size: 1.4rem;
+  color: #ffe4ec;
+  animation: fadeInSub 2.5s ease-in-out;
+  letter-spacing: 0.5px;
+}
+
+/* Button */
+.enter-btn {
+  margin-top: 1.5rem;
+  padding: 12px 30px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  background-color: #ffe4ec;
+  color: #787575;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+.enter-btn:hover {
+  background-color: #ffc0cb;
+  transform: translateY(-2px);
+}
+
+.journey-container {
+  background: linear-gradient(to bottom, #e38ca2, #ffe4ec);
+  color: #ffe4ec;
+}
+
+.journey-container h2 {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  color: #ffe4ec;
+  text-shadow: 0 0 10px rgba(255, 182, 193, 0.5);
+}
+
+/* Grid for Cards */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 30px;
+  width: 100%;
+  max-width: 1000px;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 24px;
+  color: #787575;
+  font-weight: bold;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
+}
+.card:hover {
+  transform: scale(1.05);
+}
+
+/* Petals */
+.petal {
+  position: fixed;
+  width: 12px;
+  height: 12px;
+  background: pink;
+  border-radius: 50%;
+  opacity: 0.7;
+  animation: fall 10s linear infinite;
+  z-index: 0;
+}
+@keyframes fall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Sparkles */
+.sparkle {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background: #ffe4ec;
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: sparkleFloat 5s ease-in-out infinite;
+  z-index: 0;
+}
+@keyframes sparkleFloat {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-20px) scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.6;
+  }
+}
+
+/* Section Content */
+.section-content {
+  margin: 40px auto;
+  max-width: 800px;
+  background: linear-gradient(to bottom, #ba7183, #ffe4ec);
+  padding: 40px;
+  border-radius: 16px;
+  color: #fff5e1;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  scroll-margin-top: 80px;
+  text-align: center;
+}
+.section-content h3 {
+  color: #fff5e1;
+  font-family: "Montserrat", sans-serif;
+}
+.section-content p {
+  color: #ffeedd;
+  font-family: "Montserrat", sans-serif;
+}
+
+/* Animations */
+@keyframes fadeInTitle {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeInSub {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,167 @@
+.journaling-container {
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #fff5f7, #f8bbd0, #f489ae);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+  border-radius: 2.5rem;
+  font-family: "Poppins", sans-serif;
+  color: #5c4a4a;
+  box-sizing: border-box;
+}
+
+.journaling-card {
+  background-color: #ffffff;
+  border-radius: 1.5rem;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+  padding: 2rem;
+  width: 100%;
+  max-width: 700px;
+  margin-bottom: 2rem;
+  box-sizing: border-box;
+}
+
+.journaling-card h1 {
+  font-family: "Pacifico", cursive;
+  font-size: 2rem;
+  color: #cc2e74;
+  margin-bottom: 1.2rem;
+  text-align: center;
+}
+
+.journaling-card input[type="text"],
+.journaling-card input[type="date"],
+.journaling-card textarea {
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.9rem 1rem;
+  border: 2px solid #ffc1e3;
+  border-radius: 1rem;
+  background: #fffafd;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.journaling-card textarea {
+  min-height: 180px;
+}
+
+.tone-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  justify-content: center;
+}
+
+.tone-button {
+  padding: 0.4rem 1rem;
+  border: 2px solid #ffc1e3;
+  background-color: #ffe0ef;
+  border-radius: 2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.tone-button.selected {
+  background-color: #cc2e74;
+  color: #fff;
+  border-color: #cc2e74;
+}
+
+.journaling-card button {
+  background-color: #ffb3d9;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  display: block;
+  margin: 0 auto;
+}
+
+.journaling-card button:hover {
+  background-color: #e48cb1;
+}
+
+.saved-message {
+  margin-top: 1rem;
+  text-align: center;
+  color: #6a3a53;
+  font-style: italic;
+}
+
+.journal-history {
+  background-color: #ffffff;
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+  padding: 2rem;
+  width: 100%;
+  max-width: 700px;
+  box-sizing: border-box;
+}
+
+.journal-history h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #b1336c;
+  font-weight: 600;
+  text-align: center;
+}
+
+.history-item {
+  background-color: #fff7fb;
+  border: 1px solid #ffc1e3;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.history-item:hover {
+  background-color: #ffe4f1;
+}
+
+.edit-button {
+  background-color: transparent;
+  border: none;
+  color: #cc2e74;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.entry-preview {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #fff6fb;
+  border-radius: 1.2rem;
+  border: 1px solid #ffcce6;
+}
+
+.entry-preview h3 {
+  color: #cc2e74;
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.entry-content {
+  white-space: pre-wrap;
+  margin-top: 0.5rem;
+  background: #ffffff;
+  border-radius: 1rem;
+  padding: 1rem;
+  border: 1px dashed #ffcce6;
+}

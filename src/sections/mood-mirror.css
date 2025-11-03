@@ -1,0 +1,85 @@
+.mood-mirror-container {
+  width: 89%; /* instead of max-width */
+  max-width: 900px; /* make it big but not too huge */
+  margin: auto;
+  padding: 2.5rem;
+  border-radius: 25px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(to bottom right, #fff5f7, #f8bbd0, #f489ae) !important;
+  transition: background 0.6s ease-in-out;
+}
+
+
+.mood-title {
+  font-family: 'Dancing Script', cursive; /* dreamy hand-lettered vibe */
+  font-size: 2.2rem;
+  font-weight: 500;
+  margin-bottom: 0.4rem;
+  background: rgb(108, 106, 106);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 1px;
+}
+
+.mood-subtitle {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 1.05rem;
+  margin-bottom: 1.5rem;
+  color: rgba(0, 0, 0, 0.7); /* softer black for subtitle */
+}
+
+
+.mood-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.mood-btn {
+  padding: 0.6rem 1rem;
+  font-size: 0.95rem;
+  border-radius: 20px;
+  border: none;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.mood-btn:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.mood-btn.active {
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+.mood-display {
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(8px);
+  padding: 1.5rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.mood-emoji {
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.mood-message {
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}

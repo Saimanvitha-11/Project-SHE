@@ -1,0 +1,92 @@
+.container-mental-health {
+  background: linear-gradient(to bottom right, #fff5f7, #f8bbd0, #f489ae);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  border-radius: 2.5rem !important;
+  padding: 2rem;
+  font-family: "Poppins", sans-serif;
+}
+.mental-health-card {
+  background: #f7f7f7;
+  border-radius: 1.5rem;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.07);
+  padding: 2rem;
+  width: 100%;
+  max-width: 700px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mental-health-card h1 {
+  font-size: 1.8rem;
+  color: #d63384;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-family: "Pacifico", cursive;
+}
+
+.tracker-section {
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+
+.tracker-section h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+.emoji-row,
+.stress-row {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.emoji-button {
+  font-size: 1.8rem;
+  padding: 0.7rem;
+  border-radius: 50%;
+  border: 2px solid #333;
+  background-color: #fff7fb;
+  transition: all 0.2s ease;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.emoji-button:hover {
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
+
+.emoji-button.selected {
+  background-color: #ffe0ef;
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(255, 192, 203, 0.3);
+}
+
+.stress-button {
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.6rem 1rem;
+  border-radius: 1.5rem;
+  border: 2px solid #333;
+  background-color: #fff;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stress-button.selected {
+  box-shadow: 0 0 10px rgba(255, 105, 180, 0.3);
+  transform: scale(1.05);
+}

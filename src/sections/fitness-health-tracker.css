@@ -1,0 +1,274 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap");
+
+.fitness-wrapper {
+  background: linear-gradient(to bottom right, #fff5f7, #f8bbd0, #f489ae);
+  min-height: 100vh;
+  padding: 60px 20px;
+  border-radius: 28px;
+  font-family: "Montserrat", sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.fitness-title {
+  font-size: 3.5rem !important;
+  color: #6a1b4d !important;
+  font-weight: 700;
+  margin-bottom: 40px;
+  text-align: center;
+  text-shadow: 1px 1px 10px rgba(255, 200, 220, 0.5);
+  letter-spacing: 1px;
+}
+
+.input-card,
+.summary-card {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(14px);
+  border-radius: 28px;
+  padding: 30px 30px;
+  width: 90%;
+  max-width: 600px;
+  margin: 20px auto;
+  box-shadow: 0 12px 32px rgba(240, 115, 180, 0.15);
+  transition: transform 0.3s ease;
+}
+
+.input-card:hover,
+.summary-card:hover {
+  transform: translateY(-4px);
+}
+
+.input-card label {
+  display: block;
+  margin: 18px 0 8px;
+  color: #7b1e59;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.input-card input,
+.input-card select {
+  width: 100%;
+  padding: 12px 1px;
+  border: none;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.6);
+  font-size: 1rem;
+  color: #4a235a;
+  margin-bottom: 10px;
+  outline: none;
+  box-shadow: inset 0 0 6px rgba(255, 182, 193, 0.3);
+  transition: background 0.3s ease;
+}
+.input-card input::placeholder,
+.input-card select::placeholder {
+  text-align: center;
+}
+
+.input-card input:focus,
+.input-card select:focus {
+  background: #fff;
+}
+
+.summary-card h3 {
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #6a1b4d;
+  margin-bottom: 20px;
+  letter-spacing: 0.8px;
+}
+
+.summary-card p {
+  font-size: 1.1rem;
+  margin: 10px 0;
+  color: #4a235a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+/* --- Workout Sessions Styles --- */
+.workout-section {
+  margin-top: 30px;
+  background: rgba(255, 240, 246, 0.8);
+  padding: 25px 0px;
+  border-radius: 32px;
+  box-shadow: 0 10px 25px rgba(186, 113, 131, 0.2);
+  border: 1.5px solid #f8bbd0;
+  max-width: 600px;
+  width: 100%;
+  transition: box-shadow 0.3s ease;
+}
+
+.workout-section:hover {
+  box-shadow: 0 12px 35px rgba(186, 113, 131, 0.4);
+}
+
+.workout-title {
+  font-weight: 700;
+  color: #ba7183;
+  font-size: 1.3rem;
+  margin-bottom: 16px;
+  font-family: "Montserrat", sans-serif;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.workout-title::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #ba7183, #f8bbd0);
+  border-radius: 5px;
+}
+
+.workout-list {
+  list-style: none;
+  margin: 0 auto; /* centers horizontally */
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 320px; /* optional, limits width */
+  /* Center vertically if the container allows */
+  align-items: center; /* centers items horizontally inside the list */
+}
+
+.workout-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1.05rem;
+  color: #5a495a;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.3s ease;
+  min-width: 280px; /* keeps all items the same width */
+}
+
+.workout-item:hover {
+  color: #ba7183;
+}
+
+.checkbox {
+  width: 22px;
+  height: 22px;
+  accent-color: #ba7183;
+  border-radius: 6px;
+  box-shadow: 0 0 6px rgba(186, 113, 131, 0.4);
+  cursor: pointer;
+  transition: box-shadow 0.3s ease;
+}
+
+.checkbox:hover,
+.checkbox:focus {
+  box-shadow: 0 0 12px rgba(186, 113, 131, 0.8);
+}
+
+.workout-text {
+  flex: 1;
+}
+
+.workout-item {
+  margin: 10px 0;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1rem;
+  color: #5a495a;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #ba7183; /* pretty pink check */
+  border-radius: 5px;
+  box-shadow: 0 0 4px rgba(186, 113, 131, 0.5);
+  transition: box-shadow 0.2s ease;
+}
+
+.checkbox:hover {
+  box-shadow: 0 0 8px rgba(186, 113, 131, 0.9);
+}
+
+.workout-text {
+  user-select: none;
+}
+.workout-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.workout-item label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1rem;
+  color: #5a495a;
+  user-select: none;
+}
+
+.workout-item input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  accent-color: #ba7183;
+  border-radius: 6px;
+  margin: 0;
+  padding: 0;
+  vertical-align: middle;
+  box-shadow: 0 0 6px rgba(186, 113, 131, 0.4);
+  transition: box-shadow 0.3s ease;
+}
+
+.workout-item input[type="checkbox"]:hover,
+.workout-item input[type="checkbox"]:focus {
+  box-shadow: 0 0 12px rgba(186, 113, 131, 0.8);
+}
+.popup-congrats {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffcee7;
+  color: #7d3c49;
+  border-radius: 15px;
+  padding: 20px 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  font-weight: 700;
+  font-size: 1.2rem;
+  text-align: center;
+  z-index: 9999;
+  user-select: none;
+}
+
+/* Animation */
+@keyframes fadeInPop {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOutPop {
+  to {
+    opacity: 0;
+    transform: translateY(30px);
+    pointer-events: none;
+  }
+}
