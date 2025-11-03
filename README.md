@@ -1,70 +1,105 @@
-# Getting Started with Create React App
+# Project SHE — Self Healing Environment
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**A wellness and productivity platform designed to help women regain balance, focus, and confidence through daily tracking, reflection, and growth.**
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 💡 Overview
 
-### `npm start`
+**Project SHE** began as a personal project to regain structure and motivation during a low point.  
+What started as a simple daily tracker has evolved into a broader self-care and self-improvement tool that integrates **mental health awareness, productivity, and music therapy**.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+This project is still under development, but it already provides a range of features that bring organization, reflection, and small wins into focus.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+## ✨ Key Features
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 🧠 Mind & Emotion
+- **Journaling Page:** Private digital journal for thoughts and emotions.  
+- **Mood Mirror:** Track daily emotions and patterns over time.  
+- **Mini Gratitude Journal:** Focus on positive reflections each day.  
+- **Future Letters:** Write to your future self to set intentions and goals.
 
-### `npm run build`
+### 💪 Health & Lifestyle
+- **Fitness & Health Tracker:** Record workouts and wellness data.  
+- **Day-Wise Tracker:** Plan and review daily progress and habits.  
+- **Personalized Reminders:** Stay consistent with gentle productivity prompts.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 🎧 Music & Motivation
+- **Built-in Spotify Integration:** Curated playlists for different moods and emotional states.  
+  Music as a tool for mood regulation and motivation.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 🎯 Growth & Reflection
+- **Career and Learning Tracker:** Keep track of goals and learning milestones.  
+- **Safe Place Mode:** A calming interface to decompress.  
+- **Vision Board & Wins Wall:** Visualize goals and celebrate progress.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## ⚙️ Tech Stack
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- **Frontend:** React.js, JavaScript, CSS  
+- **Styling:** Custom CSS (hand-crafted UI, Montserrat font)  
+- **Planned Integrations:** Node.js backend, AI-based chat mentor, Spotify API  
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 🚧 Current Progress
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+This project is **ongoing** — foundational components are complete, and additional features like persistence, AI integration, and enhanced UI are in progress.
 
-## Learn More
+Upcoming goals:
+- Integrate backend for saving user data  
+- Implement AI-driven mental health mentor  
+- Improve animations and accessibility  
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 🙋‍♀️ Motivation
 
-### Code Splitting
+> *Project SHE was created from a place of vulnerability and resilience.  
+> It’s for anyone trying to rebuild structure, manage emotions, and find small moments of strength in everyday life.*  
+>
+> — Saimanvitha Chevuru
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+## 🧰 Setup Instructions
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```bash
+# Clone this repository
+git clone https://github.com/Saimanvitha-11/Project-SHE.git
 
-### Making a Progressive Web App
+# Navigate into the project directory
+cd Project-SHE
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+# Install dependencies
+npm install
 
-### Advanced Configuration
+# Run the app
+npm start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Environment Variables
+Create a `.env` file locally to store your API keys (not included in the repo):
+```
+REACT_APP_OPENAI_KEY=your_api_key_here
+```
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## 🤝 Contributing
 
-### `npm run build` fails to minify
+Suggestions and contributions are welcome.  
+If you have ideas that align with the project’s vision of emotional and mental wellness through technology, feel free to fork and open a pull request.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**.
+
+---
+
+### Created by [**Saimanvitha Chevuru**](https://github.com/Saimanvitha-11)
