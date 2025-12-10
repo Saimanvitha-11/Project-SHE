@@ -1,0 +1,125 @@
+.reminder-container {
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  background: linear-gradient(to bottom right, #fff5f7, #f8bbd0, #f489ae);
+  border-radius: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: "Poppins", sans-serif;
+  color: #5c4a4a;
+  box-sizing: border-box;
+}
+
+.section-title {
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #cc2e74;
+}
+
+.mood-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+
+.mood-button {
+  padding: 0.5rem 1.2rem;
+  border: 2px solid #ffc1e3;
+  border-radius: 2rem;
+  background-color: #ffe0ef;
+  color: #5c4a4a;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.mood-button.selected {
+  background-color: #cc2e74;
+  color: #fff;
+  border-color: #cc2e74;
+}
+
+.mood-button:hover {
+  background-color: #ffb3d9;
+  color: #fff;
+}
+
+.current-reminder-card {
+  position: relative;
+  background-color: #fff0f5;
+  border-radius: 2rem;
+  padding: 1.8rem 2rem;
+  box-shadow: 0 12px 24px rgba(0,0,0,0.06);
+  max-width: 600px;
+  text-align: center;
+  margin-bottom: 2rem;
+  overflow: hidden;
+  animation: fadeInFloat 0.8s ease-in-out;
+}
+
+.reminder-text {
+  font-size: 1.2rem;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.streak {
+  font-size: 1rem;
+  color: #cc2e74;
+  margin-top: 0.5rem;
+}
+
+.previous-reminders {
+  width: 100%;
+  max-width: 600px;
+}
+
+.previous-card {
+  background-color: #fff7fb;
+  border: 1px solid #ffc1e3;
+  padding: 1rem 1.2rem;
+  border-radius: 1.5rem;
+  margin-bottom: 0.8rem;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+  font-style: italic;
+}
+
+@keyframes fadeInFloat {
+  0% { opacity: 0; transform: translateY(15px);}
+  100% { opacity: 1; transform: translateY(0);}
+}
+
+.sparkle-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.sparkle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #fff8f0;
+  border-radius: 50%;
+  opacity: 0.7;
+  animation: sparkleAnim 1.5s infinite ease-in-out;
+}
+
+.sparkle:nth-child(1) { top: 10%; left: 20%; animation-delay: 0s; }
+.sparkle:nth-child(2) { top: 30%; left: 80%; animation-delay: 0.2s; }
+.sparkle:nth-child(3) { top: 60%; left: 40%; animation-delay: 0.4s; }
+.sparkle:nth-child(4) { top: 75%; left: 65%; animation-delay: 0.6s; }
+.sparkle:nth-child(5) { top: 50%; left: 10%; animation-delay: 0.8s; }
+
+@keyframes sparkleAnim {
+  0%, 100% { transform: scale(0.5); opacity: 0.3; }
+  50% { transform: scale(1.2); opacity: 1; }
+}

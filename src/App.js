@@ -1,7 +1,7 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import "./styles.css";
 
-// Import your section components
+// Import Section Components
 import DayWiseTracker from "./sections/day-wise-tracker";
 import BuiltInSpotify from "./sections/built-in-spotify.js";
 import FitnessAndHealthTracker from "./sections/fitness-and-health-tracker";
@@ -11,23 +11,22 @@ import AiAssistant from "./sections/ai-assistant";
 import MoodMirror from "./sections/mood-mirror";
 import SelfWinsWalls from "./sections/self-wins-walls";
 import PersonalizedMotivationalReminders from "./sections/personalized-motivational-reminders.js";
-import CareerAndLearningTracker from "./sections/career-and-learning-tracker";
-import FutureLetters from "./sections/future-letters";
+import CareerAndLearningTracker from "./sections/career-and-learning-tracker.js";
+import PeriodTracker from "./sections/period-tracker.js";
 import VisionBoard from "./sections/vision-board";
-import SafePlaceMode from "./sections/safe-place-mode";
-import MiniGratitudeJournal from "./sections/mini-gratitude-journal";
-import MyRuleBook from "./sections/my-rule-book";
-import BookTracker from "./sections/book-tracker";
 
 function App() {
-  const sectionsRef = useRef(null);
+  const heroRef = useRef(null);
+  const menuRef = useRef(null);
 
-  // ✅ SAFELY create section refs
+  // Refs for all sections
   const sectionRefs = useRef([]);
   const totalSections = 16;
 
   if (sectionRefs.current.length !== totalSections) {
-    sectionRefs.current = Array.from({ length: totalSections }, () => React.createRef());
+    sectionRefs.current = Array.from({ length: totalSections }, () =>
+      React.createRef()
+    );
   }
 
   const sectionComponents = [
@@ -41,25 +40,47 @@ function App() {
     SelfWinsWalls,
     PersonalizedMotivationalReminders,
     CareerAndLearningTracker,
-    FutureLetters,
+    PeriodTracker,
     VisionBoard,
-    SafePlaceMode,
-    MiniGratitudeJournal,
-    MyRuleBook,
-    BookTracker,
   ];
 
+  // Show floating "Back to Menu" button
+  const [showTopBtn, setShowTopBtn] = useState(true);
+
+  useEffect(() => {
+    const handleScrollVisibility = () => {
+      if (window.scrollY > 200) setShowTopBtn(true);
+      else setShowTopBtn(true); // Always visible for now
+    };
+
+    window.addEventListener("scroll", handleScrollVisibility);
+    return () => window.removeEventListener("scroll", handleScrollVisibility);
+  }, []);
+
+  // ENTER → Fade out → Scroll down
   const handleScroll = () => {
-    sectionsRef.current.scrollIntoView({ behavior: "smooth" });
+    heroRef.current.classList.add("fade-out");
+
+    setTimeout(() => {
+      menuRef.current.scrollIntoView({ behavior: "smooth" });
+    }, 500);
   };
 
+  // Scroll to a section
   const scrollToSection = (index) => {
-    sectionRefs.current[index]?.current?.scrollIntoView({ behavior: "smooth" });
+    sectionRefs.current[index]?.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+  };
+
+  // Back to Menu button
+  const goToMenu = () => {
+    menuRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
     <div className="App">
-      {/* Falling Petals */}
+      {/* Floating petals */}
       {Array.from({ length: 15 }).map((_, i) => (
         <span
           key={`petal-${i}`}
@@ -86,8 +107,8 @@ function App() {
         />
       ))}
 
-      {/* First Section */}
-      <section className="container">
+      {/* HERO SECTION */}
+      <section ref={heroRef} className="container">
         <h1>Welcome to Project SHE</h1>
         <p className="subtitle">
           A safe, healing, growing space for the future me 🤍
@@ -97,29 +118,34 @@ function App() {
         </button>
       </section>
 
-      {/* Healing & Growth Journey Section */}
-      <section ref={sectionsRef} className="journey-container">
+      {/* MENU SECTION */}
+      <section ref={menuRef} className="journey-container">
         <h2>My Healing & Growth Journey 🌸</h2>
+
         <div className="grid">
           {sectionComponents.map((Component, i) => (
             <div
               key={i}
               className="card"
               onClick={() => scrollToSection(i)}
-              style={{ cursor: "pointer" }}
             >
               {Component.name.replace(/([A-Z])/g, " $1").trim()}
             </div>
           ))}
         </div>
 
-        {/* Render Sections */}
+        {/* RENDER SECTION CONTENT */}
         {sectionComponents.map((Component, i) => (
-          <div key={i} ref={sectionRefs.current[i]} style={{ margin: "2rem 0" }}>
+          <div key={i} ref={sectionRefs.current[i]} style={{ margin: "3rem 0" }}>
             <Component />
           </div>
         ))}
       </section>
+
+      {/* ALWAYS VISIBLE BACK TO MENU BUTTON */}
+      <button className="back-to-menu" onClick={goToMenu}>
+        ⬆ Menu
+      </button>
     </div>
   );
 }

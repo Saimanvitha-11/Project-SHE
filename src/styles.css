@@ -39,6 +39,22 @@ body::after {
   right: 10%;
   opacity: 0.25;
 }
+.enter-btn {
+  animation: gentlePop 2.5s ease-in-out infinite;
+  transition: all 0.3s ease;
+  border-radius: 30px;
+}
+
+.enter-btn:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 10px 25px rgba(255, 200, 220, 0.7);
+}
+
+@keyframes gentlePop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
 
 /* Shared Container Style */
 .container,
@@ -53,6 +69,15 @@ body::after {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.1);
   z-index: 1;
+}
+/* Fade-out animation */
+.container.fade-out {
+  animation: fadeOutHero 0.9s ease forwards;
+}
+
+@keyframes fadeOutHero {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.97); filter: blur(4px); }
 }
 
 /* Titles */
@@ -112,18 +137,102 @@ h1 {
 }
 
 .card {
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(12px);
-  border-radius: 20px;
-  padding: 24px;
-  color: #787575;
-  font-weight: bold;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-  transition: transform 0.3s ease;
+  position: relative;
+
+  background: linear-gradient(
+    135deg,
+    rgba(255, 214, 228, 0.9),
+    rgba(255, 170, 195, 0.85)
+  );
+
+  border-radius: 28px;
+  padding: 28px 26px;
+
+  color: #7b3f53;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.4px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  box-shadow:
+    0 18px 40px rgba(255, 105, 135, 0.35),
+    inset 0 0 18px rgba(255, 255, 255, 0.65);
+
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
+
+/* 🌸 Soft glow mist */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 30px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 105, 180, 0.45),
+    rgba(255, 200, 220, 0.2),
+    rgba(255, 105, 180, 0.45)
+  );
+  opacity: 0;
+  transition: 0.4s ease;
+  z-index: -1;
+  filter: blur(14px);
+}
+
+/* ✨ Float + glow + color shift */
 .card:hover {
-  transform: scale(1.05);
+  transform: translateY(-8px) scale(1.04);
+  background: linear-gradient(
+    135deg,
+    #ff7aa8,
+    #ff4f91
+  );
+
+  color: #ffffff;
+
+  box-shadow:
+    0 28px 65px rgba(255, 60, 120, 0.55),
+    inset 0 0 16px rgba(255, 255, 255, 0.45);
 }
+
+.card:hover::before {
+  opacity: 1;
+}
+
+/* 💗 Click feedback */
+.card:active {
+  transform: scale(0.96);
+}
+
+/* ✨ Soft shimmer sweep */
+.card::after {
+  content: "";
+  position: absolute;
+  top: -120%;
+  left: -120%;
+  width: 240%;
+  height: 240%;
+  background: linear-gradient(
+    120deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.25),
+    transparent 60%
+  );
+  transform: rotate(25deg);
+  transition: 0.6s ease;
+}
+
+.card:hover::after {
+  top: 120%;
+  left: 120%;
+}
+
 
 /* Petals */
 .petal {
@@ -214,4 +323,70 @@ h1 {
     opacity: 1;
     transform: translateY(0);
   }
+}
+/* ================== CINEMATIC HERO ANIMATIONS ================== */
+
+/* Floating glass card */
+.container {
+  animation: floatCard 6s ease-in-out infinite,
+             fadeInHero 1.8s ease-out;
+}
+
+@keyframes floatCard {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-14px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes fadeInHero {
+  0% { opacity: 0; transform: translateY(40px) scale(0.97); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Beautiful neon glow for title */
+h1 {
+  text-shadow:
+    0 0 25px rgba(255, 170, 190, 0.9),
+    0 0 45px rgba(255, 180, 200, 0.7),
+    0 0 70px rgba(255, 200, 220, 0.5);
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0%   { text-shadow: 0 0 20px rgba(255, 190, 220, 0.9); }
+  50%  { text-shadow: 0 0 40px rgba(255, 210, 230, 1); }
+  100% { text-shadow: 0 0 20px rgba(255, 190, 220, 0.9); }
+}
+/* FLOATING BACK TO MENU BUTTON */
+.back-to-menu {
+  position: fixed !important;
+  bottom: 25px;
+  right: 25px;
+
+  padding: 14px 22px;
+  font-size: 1rem;
+  font-weight: 600;
+
+  border: none;
+  border-radius: 999px;
+
+  background: linear-gradient(135deg, #ff8fa3, #ff4d6d);
+  color: white;
+
+  cursor: pointer;
+
+  box-shadow: 0 12px 35px rgba(255, 77, 109, 0.55);
+
+  z-index: 999999999 !important;
+
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
+
+  transition: all 0.3s ease;
+}
+
+.back-to-menu:hover {
+  transform: translateY(-5px) scale(1.07);
+  box-shadow: 0 15px 45px rgba(255, 77, 109, 0.75);
 }

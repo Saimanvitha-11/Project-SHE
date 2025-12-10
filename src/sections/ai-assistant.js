@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
 import "./ai-assistant.css";
-
-// ✅ Load OpenAI API key from .env
-const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
-console.log("Loaded API key:", apiKey); // For debugging — remove in production
 
 const AiAssistant = () => {
   const [messages, setMessages] = useState([
@@ -14,6 +9,7 @@ const AiAssistant = () => {
         "👋 Hi, I’m SHE-Mentor — a senior Microsoft engineer. I’ll help you prepare for your dream role. What role are you aiming for? (e.g., SDE, PM, AI/ML)",
     },
   ]);
+
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -25,50 +21,36 @@ const AiAssistant = () => {
     setInput("");
     setLoading(true);
 
-    const botMessage = await getBotResponse(input);
-    setMessages((prev) => [...prev, botMessage]);
-    setLoading(false);
-  };
-
-  const getBotResponse = async (inputText) => {
     try {
-      const response = await axios.post(
-        "https://api.openai.com/v1/chat/completions",
-        {
-          model: "gpt-3.5-turbo",
-          messages: [
-            {
-              role: "system",
-              content:
-                "You are SHE-Mentor, a senior Microsoft engineer helping users become job-ready for Microsoft. Provide structured guidance on DSA, system design, resume writing, interview prep, and career growth. Always be kind, encouraging, and actionable.",
-            },
-            {
-              role: "user",
-              content: inputText,
-            },
-          ],
-          temperature: 0.7,
+      const response = await fetch("http://localhost:5000/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        {
-          headers: {
-            Authorization: `Bearer ${apiKey}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+        body: JSON.stringify({ message: input }),
+      });
 
-      return {
+      const data = await response.json();
+
+      const botMessage = {
         sender: "bot",
-        text: response.data.choices[0].message.content.trim(),
+        text: data.reply,
       };
+
+      setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
-      console.error("❌ OpenAI API Error:", error);
-      return {
-        sender: "bot",
-        text:
-          "🚨 Sorry, something went wrong while talking to SHE-Mentor. Please try again or check your API key.",
-      };
+      console.error("❌ Backend Error:", error);
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: "bot",
+          text:
+            "🚨 I couldn’t reach the SHE-Mentor server. Is your backend running?",
+        },
+      ]);
     }
+
+    setLoading(false);
   };
 
   return (
@@ -84,6 +66,7 @@ const AiAssistant = () => {
             {msg.text}
           </div>
         ))}
+
         {loading && (
           <div className="chat-message bot">⏳ SHE-Mentor is typing...</div>
         )}

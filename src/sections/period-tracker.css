@@ -1,0 +1,287 @@
+/* ================= PROJECT SHE — PERIOD TRACKER (FINAL STABLE) ================= */
+
+.period-tracker-container {
+  padding: 2.5rem 2rem;
+  margin-top: 2rem;
+  margin-bottom: 2.5rem;
+  border-radius: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.8rem;
+  box-sizing: border-box;
+}
+
+/* ---------------- TOP LAYOUT ---------------- */
+
+.period-top {
+  display: flex;
+  gap: 1.6rem;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.period-top .left {
+  flex: 1 1 52%;
+}
+
+.period-top .right {
+  flex: 0 0 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---------------- INPUTS ---------------- */
+
+.inputs {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.inputs label {
+  font-size: 0.9rem;
+  display: block;
+  margin-top: 0.6rem;
+  color: #7a4a61;
+}
+
+.inputs input[type="date"],
+.inputs input[type="number"] {
+  width: 100%;
+  padding: 0.6rem 0.85rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.6);
+  margin-top: 0.4rem;
+  box-shadow: inset 0 2px 4px rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.9);
+  box-sizing: border-box;
+}
+
+/* ---------------- BUTTONS ---------------- */
+
+.buttons-row {
+  margin-top: 0.8rem;
+  display: flex;
+  gap: 0.8rem;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.period-btn {
+  background: linear-gradient(135deg, #ff8fa3, #ff4d6d);
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 8px 20px rgba(255,77,109,0.25);
+  font-weight: 500;
+}
+
+.period-btn:hover { transform: translateY(-2px); }
+
+.period-btn.ghost {
+  background: rgba(255,255,255,0.95);
+  color: #cc2e74;
+  box-shadow: none;
+  border: 1px solid rgba(255,140,199,0.3);
+}
+
+/* ---------------- MOON RING ---------------- */
+
+.moon-ring {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  position: relative;
+  transform: rotate(-90deg);
+}
+
+.ring-segment {
+  position: absolute;
+  width: 8px;
+  height: 56px;
+  left: 50%;
+  top: 50%;
+  transform-origin: bottom center;
+  transform: translateX(-50%) rotate(0deg);
+  border-radius: 6px;
+  opacity: 0.65;
+}
+
+.ring-segment.phase-0 { background: rgba(255,200,214,0.95); }
+.ring-segment.phase-1 { background: rgba(255,230,240,0.95); }
+.ring-segment.phase-2 { background: rgba(255,210,180,0.95); }
+.ring-segment.phase-3 { background: rgba(255,245,250,0.95); }
+
+.ring-segment.today {
+  width: 12px;
+  height: 68px;
+  opacity: 1;
+  box-shadow: 0 0 18px rgba(0,0,0,0.3);
+}
+
+.ring-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(90deg);
+  text-align: center;
+}
+
+.phase-label { font-weight: 700; color: #cc2e74; }
+.phase-key { font-size: 0.8rem; color: #8a5a6f; }
+
+/* ---------------- LOWER CARDS ---------------- */
+
+.middle {
+  width: 100%;
+  max-width: 860px;
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  align-items: flex-start;
+  gap: 1.6rem;
+}
+
+.phase-card,
+.symptom-card {
+  background: rgba(255,255,255,0.96);
+  border-radius: 18px;
+  box-shadow:
+    0 12px 28px rgba(0,0,0,0.08),
+    0 0 18px rgba(255,140,199,0.18);
+  padding: 1.5rem;
+  box-sizing: border-box;
+  width: 100%;
+  overflow: hidden;
+}
+
+.symptom-card {
+  max-width: 260px;
+  min-width: 260px;
+}
+
+.phase-copy { color: #4b1f33; font-weight: 500; }
+
+.suggestions li {
+  color: #5a2b3f;
+  font-weight: 500;
+}
+
+.phase-actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+/* ---------------- SYMPTOMS ---------------- */
+
+.symptom-card h4,
+.phase-card h3 {
+  color: #4b1f33;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 0.8rem;
+}
+
+.sym-row {
+  margin-top: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.sym-row.quicks {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+#mood-select {
+  width: 100%;
+  max-width: 100%;
+  padding: 0.5rem 0.9rem;
+  border-radius: 14px;
+  border: 1px solid #ffc1e3;
+  background: #fff7fb;
+  font-size: 0.9rem;
+  color: #4b1f33;
+  outline: none;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+/* Mood buttons */
+.small {
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  border: 1px solid #ffc1e3;
+  background: linear-gradient(135deg, #ffe0ef, #fff7fb);
+  cursor: pointer;
+  color: #cc2e74;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.small:hover {
+  background: #cc2e74;
+  color: white;
+}
+
+/* ---------------- LOGS ---------------- */
+
+.logs {
+  margin-top: 0.6rem;
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.log-item {
+  padding: 0.6rem 0.7rem;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #fff7fb, #ffe9f3);
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  max-width: 100%;
+}
+
+.log-date { font-size: 0.85rem; color: #9b5a78; }
+.log-meta { font-size: 0.8rem; color: #7a4a61; }
+
+/* Scrollbar */
+.logs::-webkit-scrollbar { width: 6px; }
+.logs::-webkit-scrollbar-thumb { background: #ffb6d5; border-radius: 10px; }
+.logs::-webkit-scrollbar-track { background: #fff0f6; }
+
+/* ---------------- TOAST ---------------- */
+
+.period-toast {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  background: linear-gradient(135deg,#ff8fa3,#ff4d6d);
+  color: white;
+  padding: 0.9rem 1rem;
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(255,77,109,0.2);
+}
+
+/* ---------------- HELPERS ---------------- */
+
+.subtitle { color: rgba(255,255,255,0.85); margin-top: 0.2rem; }
+.muted { color: rgba(92,74,74,0.6); font-style: italic; }
+.predict-small { margin-top: 0.6rem; color: #8a5a6f; font-size: 0.9rem; }
