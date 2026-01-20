@@ -1,11 +1,18 @@
 import React, { useRef, useState, useEffect } from "react";
 import "./styles.css";
 
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { supabase } from "./supabaseClient";
+
+// AUTH PAGES
+import Login from "./auth/Login";
+import Register from "./auth/Register";
+
 // Import Section Components
 import DayWiseTracker from "./sections/day-wise-tracker";
 import BuiltInSpotify from "./sections/built-in-spotify.js";
-import FitnessAndHealthTracker from "./sections/fitness-and-health-tracker";
-import MentalHealthTracker from "./sections/mental-health-tracker";
+import FitnessDashboard from "./sections/fitness-dashboard";
+import MentalHealthDashboard from "./sections/mental-health-dashboard";
 import JournalingPage from "./sections/journaling-page";
 import AiAssistant from "./sections/ai-assistant";
 import MoodMirror from "./sections/mood-mirror";
@@ -15,11 +22,35 @@ import CareerAndLearningTracker from "./sections/career-and-learning-tracker.js"
 import PeriodTracker from "./sections/period-tracker.js";
 import VisionBoard from "./sections/vision-board";
 
-function App() {
+
+
+/* ---------------- PROTECTED ROUTE ---------------- */
+function ProtectedRoute({ children }) {
+  const [session, setSession] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session);
+      setLoading(false);
+    });
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+  }, []);
+
+  if (loading) return null;
+
+  // Allow unconfirmed users too
+  return session ? children : <Navigate to="/login" replace />;
+}
+
+/* ---------------- MAIN PROJECT SHE UI ---------------- */
+function ProjectSHEApp() {
   const heroRef = useRef(null);
   const menuRef = useRef(null);
 
-  // Refs for all sections
   const sectionRefs = useRef([]);
   const totalSections = 16;
 
@@ -31,33 +62,31 @@ function App() {
 
   const sectionComponents = [
     DayWiseTracker,
-    BuiltInSpotify,
-    FitnessAndHealthTracker,
-    MentalHealthTracker,
-    JournalingPage,
-    AiAssistant,
-    MoodMirror,
-    SelfWinsWalls,
-    PersonalizedMotivationalReminders,
-    CareerAndLearningTracker,
-    PeriodTracker,
-    VisionBoard,
+  BuiltInSpotify,
+  FitnessDashboard,
+  MentalHealthDashboard,
+  JournalingPage,
+  AiAssistant,
+  MoodMirror,
+  SelfWinsWalls,
+  PersonalizedMotivationalReminders,
+  CareerAndLearningTracker,
+  PeriodTracker,
+  VisionBoard,
   ];
 
-  // Show floating "Back to Menu" button
   const [showTopBtn, setShowTopBtn] = useState(true);
 
   useEffect(() => {
     const handleScrollVisibility = () => {
-      if (window.scrollY > 200) setShowTopBtn(true);
-      else setShowTopBtn(true); // Always visible for now
+      setShowTopBtn(true);
     };
 
     window.addEventListener("scroll", handleScrollVisibility);
-    return () => window.removeEventListener("scroll", handleScrollVisibility);
+    return () =>
+      window.removeEventListener("scroll", handleScrollVisibility);
   }, []);
 
-  // ENTER → Fade out → Scroll down
   const handleScroll = () => {
     heroRef.current.classList.add("fade-out");
 
@@ -66,14 +95,12 @@ function App() {
     }, 500);
   };
 
-  // Scroll to a section
   const scrollToSection = (index) => {
     sectionRefs.current[index]?.current?.scrollIntoView({
       behavior: "smooth",
     });
   };
 
-  // Back to Menu button
   const goToMenu = () => {
     menuRef.current.scrollIntoView({ behavior: "smooth" });
   };
@@ -107,7 +134,7 @@ function App() {
         />
       ))}
 
-      {/* HERO SECTION */}
+      {/* HERO */}
       <section ref={heroRef} className="container">
         <h1>Welcome to Project SHE</h1>
         <p className="subtitle">
@@ -118,7 +145,7 @@ function App() {
         </button>
       </section>
 
-      {/* MENU SECTION */}
+      {/* MENU */}
       <section ref={menuRef} className="journey-container">
         <h2>My Healing & Growth Journey 🌸</h2>
 
@@ -134,15 +161,19 @@ function App() {
           ))}
         </div>
 
-        {/* RENDER SECTION CONTENT */}
+        {/* SECTION COMPONENTS */}
         {sectionComponents.map((Component, i) => (
-          <div key={i} ref={sectionRefs.current[i]} style={{ margin: "3rem 0" }}>
+          <div
+            key={i}
+            ref={sectionRefs.current[i]}
+            style={{ margin: "3rem 0" }}
+          >
             <Component />
           </div>
         ))}
       </section>
 
-      {/* ALWAYS VISIBLE BACK TO MENU BUTTON */}
+      {/* ALWAYS VISIBLE */}
       <button className="back-to-menu" onClick={goToMenu}>
         ⬆ Menu
       </button>
@@ -150,4 +181,29 @@ function App() {
   );
 }
 
-export default App;
+
+/* ---------------- ROUTER WRAPPER ---------------- */
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+
+        {/* Public routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/fitness" element={<FitnessDashboard />} />
+
+        {/* Protected route for the entire Project SHE */}
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <ProjectSHEApp />
+            </ProtectedRoute>
+          }
+        />
+
+      </Routes>
+    </BrowserRouter>
+  );
+}

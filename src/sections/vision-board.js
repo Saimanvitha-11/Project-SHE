@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import "./vision-board.css";
+import { supabase } from "../supabaseClient";
 
 export default function VisionBoard() {
   const fileInputRef = useRef(null);
@@ -11,54 +12,8 @@ export default function VisionBoard() {
   const drawing = useRef(false);
   const undoStack = useRef([]);
 
-  const [boards, setBoards] = useState(() => {
-    const saved = localStorage.getItem("vision-boards");
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        return parsed.map((b, idx) => ({
-          id: b.id ?? Date.now() + idx,
-          name: b.name ?? `Board ${idx + 1}`,
-          items: b.items ?? [],
-          doodles: b.doodles ?? "",
-          timeline: b.timeline || { past: "", now: "", future: "" },
-          goal:
-            b.goal || {
-              title: "",
-              targetDate: "",
-              selfProgress: 0,
-              monthFocus: "",
-              todayAction: "",
-            },
-        }));
-      } catch {
-        // fallback if parsing fails
-      }
-    }
-    return [
-      {
-        id: 1,
-        name: "My First Dream",
-        items: [],
-        doodles: "",
-        timeline: { past: "", now: "", future: "" },
-        goal: {
-          title: "",
-          targetDate: "",
-          selfProgress: 0,
-          monthFocus: "",
-          todayAction: "",
-        },
-      },
-    ];
-  });
-
-  const [activeBoardId, setActiveBoardId] = useState(
-    (boards[0] && boards[0].id) || 1
-  );
-
-  const activeBoard =
-    boards.find((b) => b.id === activeBoardId) || boards[0];
+  const [boards, setBoards] = useState([]);
+  const [activeBoardId, setActiveBoardId] = useState(null);
 
   const [dragging, setDragging] = useState(null);
   const [drawMode, setDrawMode] = useState(false);
@@ -66,71 +21,85 @@ export default function VisionBoard() {
   const [brushSize, setBrushSize] = useState(4);
   const [isEraser, setIsEraser] = useState(false);
 
-  const [viewMode, setViewMode] = useState("board"); // "board" | "timeline" | "goals"
+  const [viewMode, setViewMode] = useState("board");
 
-  // save boards
+  // -------------------------------------------------------------------
+  // 1️⃣ LOAD ALL BOARDS FROM SUPABASE
+  // -------------------------------------------------------------------
+  const loadBoards = async () => {
+    const user = await supabase.auth.getUser();
+    if (!user.data.user) return;
+
+    const { data } = await supabase
+      .from("vision_boards")
+      .select("*")
+      .eq("user_id", user.data.user.id)
+      .order("created_at", { ascending: true });
+
+    if (!data || data.length === 0) {
+      // Create 1 default board if none exist
+      const { data: newBoard } = await supabase
+        .from("vision_boards")
+        .insert({
+          user_id: user.data.user.id,
+          name: "My First Dream",
+          items: [],
+          doodles: "",
+          timeline: { past: "", now: "", future: "" },
+          goal: {
+            title: "",
+            targetDate: "",
+            selfProgress: 0,
+            monthFocus: "",
+            todayAction: "",
+          },
+        })
+        .select()
+        .single();
+
+      setBoards([newBoard]);
+      setActiveBoardId(newBoard.id);
+      return;
+    }
+
+    setBoards(data);
+    setActiveBoardId(data[0].id);
+  };
+
   useEffect(() => {
-    localStorage.setItem("vision-boards", JSON.stringify(boards));
+    loadBoards();
+  }, []);
+
+  // -------------------------------------------------------------------
+  // 2️⃣ AUTO-SAVE WHEN activeBoard changes
+  // -------------------------------------------------------------------
+  const saveBoard = async (board) => {
+    if (!board) return;
+
+    await supabase
+      .from("vision_boards")
+      .update({
+        name: board.name,
+        items: board.items,
+        doodles: board.doodles,
+        timeline: board.timeline,
+        goal: board.goal,
+      })
+      .eq("id", board.id);
+  };
+
+  // Save whenever boards state changes
+  useEffect(() => {
+    if (!activeBoardId) return;
+    const board = boards.find((b) => b.id === activeBoardId);
+    saveBoard(board);
   }, [boards]);
 
-  // canvas size + restore doodles
-  useEffect(() => {
-    if (!canvasRef.current || !boardRef.current) return;
+  const activeBoard = boards.find((b) => b.id === activeBoardId);
 
-    const canvas = canvasRef.current;
-    const board = boardRef.current;
-
-    canvas.width = board.clientWidth;
-    canvas.height = board.clientHeight;
-
-    const ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    undoStack.current = [];
-
-    if (activeBoard?.doodles) {
-      const img = new Image();
-      img.src = activeBoard.doodles;
-      img.onload = () => {
-        ctx.drawImage(img, 0, 0);
-        undoStack.current.push(activeBoard.doodles);
-      };
-    }
-  }, [activeBoardId, boards.length]);
-
-  const getCanvasPos = (e) => {
-    const rect = canvasRef.current.getBoundingClientRect();
-    return {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    };
-  };
-
-  // -------- BOARD MANAGEMENT --------
-  const addBoard = () => {
-    const name = prompt("Name your new vision board:");
-    if (!name) return;
-
-    const newBoard = {
-      id: Date.now(),
-      name,
-      items: [],
-      doodles: "",
-      timeline: { past: "", now: "", future: "" },
-      goal: {
-        title: "",
-        targetDate: "",
-        selfProgress: 0,
-        monthFocus: "",
-        todayAction: "",
-      },
-    };
-
-    setBoards((prev) => [...prev, newBoard]);
-    setActiveBoardId(newBoard.id);
-  };
-
-  // -------- IMAGE + TEXT --------
+  // -------------------------------------------------------------------
+  // IMAGE UPLOAD
+  // -------------------------------------------------------------------
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -145,17 +114,22 @@ export default function VisionBoard() {
         y: 80,
       };
 
-      setBoards((prev) =>
-        prev.map((board) =>
-          board.id === activeBoardId
-            ? { ...board, items: [...board.items, newItem] }
-            : board
-        )
-      );
+      updateBoard({ items: [...activeBoard.items, newItem] });
     };
     reader.readAsDataURL(file);
   };
 
+  const updateBoard = (fields) => {
+    setBoards((prev) =>
+      prev.map((b) =>
+        b.id === activeBoardId ? { ...b, ...fields } : b
+      )
+    );
+  };
+
+  // -------------------------------------------------------------------
+  // TEXT NOTE
+  // -------------------------------------------------------------------
   const addTextNote = () => {
     const text = prompt("Write your intention:");
     if (!text) return;
@@ -168,229 +142,150 @@ export default function VisionBoard() {
       y: 100,
     };
 
-    setBoards((prev) =>
-      prev.map((board) =>
-        board.id === activeBoardId
-          ? { ...board, items: [...board.items, newItem] }
-          : board
-      )
-    );
+    updateBoard({ items: [...activeBoard.items, newItem] });
   };
 
   const deleteItem = (itemId) => {
-    setBoards((prev) =>
-      prev.map((board) =>
-        board.id === activeBoardId
-          ? {
-              ...board,
-              items: board.items.filter((item) => item.id !== itemId),
-            }
-          : board
-      )
-    );
+    updateBoard({
+      items: activeBoard.items.filter((i) => i.id !== itemId),
+    });
   };
 
-  // -------- DRAG ITEMS --------
+  // -------------------------------------------------------------------
+  // DRAGGING ITEMS
+  // -------------------------------------------------------------------
   const startDrag = (e, itemId) => {
     if (drawMode || viewMode !== "board") return;
+
+    const rect = boardRef.current.getBoundingClientRect();
     setDragging({
       id: itemId,
-      offsetX: e.nativeEvent.offsetX,
-      offsetY: e.nativeEvent.offsetY,
+      offsetX: e.clientX - rect.left,
+      offsetY: e.clientY - rect.top,
     });
   };
 
   const onDrag = (e) => {
-    if (!dragging || viewMode !== "board") return;
+    if (!dragging) return;
 
-    const boardRect = boardRef.current.getBoundingClientRect();
-    const x = e.clientX - boardRect.left - dragging.offsetX;
-    const y = e.clientY - boardRect.top - dragging.offsetY;
+    const rect = boardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left - 40;
+    const y = e.clientY - rect.top - 40;
 
-    setBoards((prev) =>
-      prev.map((board) =>
-        board.id === activeBoardId
-          ? {
-              ...board,
-              items: board.items.map((item) =>
-                item.id === dragging.id ? { ...item, x, y } : item
-              ),
-            }
-          : board
-      )
-    );
+    updateBoard({
+      items: activeBoard.items.map((item) =>
+        item.id === dragging.id ? { ...item, x, y } : item
+      ),
+    });
   };
 
   const stopDrag = () => setDragging(null);
 
-  // -------- DOODLE MODE --------
+  // -------------------------------------------------------------------
+  // DOODLE MODE CANVAS
+  // -------------------------------------------------------------------
+  const getCanvasPos = (e) => {
+    const rect = canvasRef.current.getBoundingClientRect();
+    return {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    };
+  };
+
   const startDrawing = (e) => {
     if (!drawMode || viewMode !== "board") return;
     drawing.current = true;
     const { x, y } = getCanvasPos(e);
     const ctx = canvasRef.current.getContext("2d");
-
     ctx.beginPath();
     ctx.moveTo(x, y);
   };
 
   const draw = (e) => {
-    if (!drawing.current || viewMode !== "board") return;
+    if (!drawing.current) return;
+
     const { x, y } = getCanvasPos(e);
     const ctx = canvasRef.current.getContext("2d");
 
     ctx.lineTo(x, y);
 
-    ctx.strokeStyle = isEraser ? "rgba(0,0,0,1)" : brushColor;
     ctx.globalCompositeOperation = isEraser
       ? "destination-out"
       : "source-over";
 
+    ctx.strokeStyle = isEraser ? "rgba(0,0,0,1)" : brushColor;
     ctx.lineWidth = brushSize;
     ctx.lineCap = "round";
-    ctx.lineJoin = "round";
     ctx.stroke();
   };
 
   const stopDrawing = () => {
     if (!drawing.current) return;
+
     drawing.current = false;
 
-    const canvas = canvasRef.current;
-    const data = canvas.toDataURL();
-
+    const data = canvasRef.current.toDataURL();
     undoStack.current.push(data);
 
-    setBoards((prev) =>
-      prev.map((board) =>
-        board.id === activeBoardId ? { ...board, doodles: data } : board
-      )
-    );
+    updateBoard({ doodles: data });
   };
 
-  const clearDoodles = () => {
-    const ctx = canvasRef.current.getContext("2d");
-    ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-
-    undoStack.current = [];
-
-    setBoards((prev) =>
-      prev.map((board) =>
-        board.id === activeBoardId ? { ...board, doodles: "" } : board
-      )
-    );
-  };
-
-  const undoLastStroke = () => {
-    if (undoStack.current.length === 0) return;
-
-    undoStack.current.pop();
-    const previous = undoStack.current[undoStack.current.length - 1] || "";
-
-    const ctx = canvasRef.current.getContext("2d");
-    ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-
-    if (previous) {
-      const img = new Image();
-      img.src = previous;
-      img.onload = () => ctx.drawImage(img, 0, 0);
-    }
-
-    setBoards((prev) =>
-      prev.map((board) =>
-        board.id === activeBoardId ? { ...board, doodles: previous } : board
-      )
-    );
-  };
-
-  // -------- TIMELINE MODE --------
+  // -------------------------------------------------------------------
+  // TIMELINE MODE
+  // -------------------------------------------------------------------
   const handleTimelineChange = (field, value) => {
-    setBoards((prev) =>
-      prev.map((board) =>
-        board.id === activeBoardId
-          ? {
-              ...board,
-              timeline: {
-                past: "",
-                now: "",
-                future: "",
-                ...(board.timeline || {}),
-                [field]: value,
-              },
-            }
-          : board
-      )
-    );
+    updateBoard({
+      timeline: { ...activeBoard.timeline, [field]: value },
+    });
   };
 
-  // -------- GOAL MODE --------
+  // -------------------------------------------------------------------
+  // GOALS MODE
+  // -------------------------------------------------------------------
   const handleGoalChange = (field, value) => {
-    setBoards((prev) =>
-      prev.map((board) =>
-        board.id === activeBoardId
-          ? {
-              ...board,
-              goal: {
-                title: "",
-                targetDate: "",
-                selfProgress: 0,
-                monthFocus: "",
-                todayAction: "",
-                ...(board.goal || {}),
-                [field]: field === "selfProgress" ? Number(value) : value,
-              },
-            }
-          : board
-      )
-    );
+    const updatedGoal = {
+      ...activeBoard.goal,
+      [field]: field === "selfProgress" ? Number(value) : value,
+    };
+
+    updateBoard({ goal: updatedGoal });
   };
 
-  const goal = activeBoard?.goal || {};
-  const goalProgress = goal.selfProgress || 0;
-
-  // -------- EXPORT --------
+  // -------------------------------------------------------------------
+  // EXPORT FUNCTIONS
+  // -------------------------------------------------------------------
   const handleExportPNG = async () => {
-    if (!boardRef.current) return;
     const canvas = await html2canvas(boardRef.current, { scale: 2 });
     const link = document.createElement("a");
-    const safeName =
-      (activeBoard?.name || "vision-board").replace(/\s+/g, "-").toLowerCase();
-    link.download = `${safeName}.png`;
+    link.download = `${activeBoard.name}.png`;
     link.href = canvas.toDataURL("image/png");
     link.click();
   };
 
   const handleExportPDF = async () => {
-    if (!boardRef.current) return;
     const canvas = await html2canvas(boardRef.current, { scale: 2 });
-    const imgData = canvas.toDataURL("image/png");
+    const img = canvas.toDataURL("image/png");
     const pdf = new jsPDF("landscape", "px", "a4");
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    const ratio = Math.min(
-      pageWidth / canvas.width,
-      pageHeight / canvas.height
-    );
-    const imgWidth = canvas.width * ratio;
-    const imgHeight = canvas.height * ratio;
-    const x = (pageWidth - imgWidth) / 2;
-    const y = (pageHeight - imgHeight) / 2;
-    pdf.addImage(imgData, "PNG", x, y, imgWidth, imgHeight);
-    const safeName =
-      (activeBoard?.name || "vision-board").replace(/\s+/g, "-").toLowerCase();
-    pdf.save(`${safeName}.pdf`);
+
+    const width = pdf.internal.pageSize.getWidth();
+    const height = pdf.internal.pageSize.getHeight();
+    pdf.addImage(img, "PNG", 0, 0, width, height);
+    pdf.save(`${activeBoard.name}.pdf`);
   };
 
   if (!activeBoard) return null;
 
+  // -------------------------------------------------------------------
+  // UI
+  // -------------------------------------------------------------------
   return (
     <div
       className="vision-container"
       onMouseMove={onDrag}
       onMouseUp={stopDrag}
     >
-      <h3 className="vision-title">Vision Board Section</h3>
-      <p className="vision-sub">Create, draw, move & manifest freely.</p>
+      <h3 className="vision-title">Vision Board</h3>
+      <p className="vision-sub">Dream it. Build it. See it come alive.</p>
 
       {/* MODE TOGGLE */}
       <div className="vision-mode-toggle">
@@ -414,18 +309,17 @@ export default function VisionBoard() {
         </button>
       </div>
 
-      {/* BOARD TABS */}
+      {/* BOARD SELECTOR */}
       <div className="vision-tabs">
         {boards.map((board) => (
           <button
             key={board.id}
-            className={board.id === activeBoardId ? "active-tab" : ""}
+            className={activeBoardId === board.id ? "active-tab" : ""}
             onClick={() => setActiveBoardId(board.id)}
           >
             {board.name}
           </button>
         ))}
-        <button onClick={addBoard}>+ New Board</button>
       </div>
 
       {/* CONTROLS */}
@@ -437,7 +331,7 @@ export default function VisionBoard() {
           {drawMode ? "Stop Drawing" : "Doodle Mode"}
         </button>
 
-        {viewMode === "board" && drawMode && (
+        {drawMode && (
           <>
             <input
               type="color"
@@ -452,16 +346,14 @@ export default function VisionBoard() {
               value={brushSize}
               onChange={(e) => setBrushSize(e.target.value)}
             />
+
             <button onClick={() => setIsEraser(false)}>✏️ Pen</button>
             <button onClick={() => setIsEraser(true)}>🧽 Eraser</button>
-            <button onClick={undoLastStroke}>↩ Undo</button>
-            <button onClick={clearDoodles}>🗑 Clear</button>
           </>
         )}
 
-        {/* Export buttons always available */}
-        <button onClick={handleExportPNG}>📤 PNG</button>
-        <button onClick={handleExportPDF}>📄 PDF</button>
+        <button onClick={handleExportPNG}>PNG</button>
+        <button onClick={handleExportPDF}>PDF</button>
       </div>
 
       <input
@@ -472,16 +364,16 @@ export default function VisionBoard() {
         onChange={handleImageUpload}
       />
 
-      {/* BOARD AREA */}
+      {/* MAIN BOARD */}
       <div
         className="vision-board"
         ref={boardRef}
-        onMouseDown={viewMode === "board" ? startDrawing : undefined}
-        onMouseMove={viewMode === "board" ? draw : undefined}
-        onMouseUp={viewMode === "board" ? stopDrawing : undefined}
-        onMouseLeave={viewMode === "board" ? stopDrawing : undefined}
+        onMouseDown={drawMode ? startDrawing : undefined}
+        onMouseMove={drawMode ? draw : undefined}
+        onMouseUp={drawMode ? stopDrawing : undefined}
+        onMouseLeave={drawMode ? stopDrawing : undefined}
       >
-        {/* CANVAS MODE */}
+        {/* BOARD MODE */}
         {viewMode === "board" && (
           <>
             <canvas ref={canvasRef} className="vision-canvas" />
@@ -500,7 +392,7 @@ export default function VisionBoard() {
                 </span>
 
                 {item.type === "image" ? (
-                  <img src={item.src} alt="vision" />
+                  <img src={item.src} alt="" />
                 ) : (
                   <div className="vision-text">{item.text}</div>
                 )}
@@ -513,33 +405,30 @@ export default function VisionBoard() {
         {viewMode === "timeline" && (
           <div className="timeline-layout">
             <div className="timeline-column">
-              <h4>Past Me</h4>
+              <h4>Past</h4>
               <textarea
                 className="timeline-input"
-                placeholder="What did she survive? What did she learn?"
-                value={activeBoard.timeline?.past || ""}
+                value={activeBoard.timeline.past}
                 onChange={(e) =>
                   handleTimelineChange("past", e.target.value)
                 }
               />
             </div>
             <div className="timeline-column">
-              <h4>Now Me</h4>
+              <h4>Now</h4>
               <textarea
                 className="timeline-input"
-                placeholder="Who is she now? What is she working on?"
-                value={activeBoard.timeline?.now || ""}
+                value={activeBoard.timeline.now}
                 onChange={(e) =>
                   handleTimelineChange("now", e.target.value)
                 }
               />
             </div>
             <div className="timeline-column">
-              <h4>Future Me</h4>
+              <h4>Future</h4>
               <textarea
                 className="timeline-input"
-                placeholder="Where is she headed? Describe her life."
-                value={activeBoard.timeline?.future || ""}
+                value={activeBoard.timeline.future}
                 onChange={(e) =>
                   handleTimelineChange("future", e.target.value)
                 }
@@ -553,11 +442,10 @@ export default function VisionBoard() {
           <div className="goals-layout">
             <div className="goal-main">
               <label>
-                Big Dream:
+                Big Dream
                 <input
                   type="text"
-                  placeholder="e.g. 15+ LPA SWE at Microsoft"
-                  value={goal.title || ""}
+                  value={activeBoard.goal.title}
                   onChange={(e) =>
                     handleGoalChange("title", e.target.value)
                   }
@@ -565,10 +453,10 @@ export default function VisionBoard() {
               </label>
 
               <label>
-                Target Date:
+                Target Date
                 <input
                   type="date"
-                  value={goal.targetDate || ""}
+                  value={activeBoard.goal.targetDate}
                   onChange={(e) =>
                     handleGoalChange("targetDate", e.target.value)
                   }
@@ -576,12 +464,12 @@ export default function VisionBoard() {
               </label>
 
               <label>
-                How close do you feel? ({goalProgress}%)
+                Progress ({activeBoard.goal.selfProgress}%)
                 <input
                   type="range"
                   min="0"
                   max="100"
-                  value={goalProgress}
+                  value={activeBoard.goal.selfProgress}
                   onChange={(e) =>
                     handleGoalChange("selfProgress", e.target.value)
                   }
@@ -591,20 +479,16 @@ export default function VisionBoard() {
               <div className="goal-progress-bar">
                 <div
                   className="goal-progress-fill"
-                  style={{ width: `${goalProgress}%` }}
-                />
+                  style={{ width: `${activeBoard.goal.selfProgress}%` }}
+                ></div>
               </div>
-              <p className="goal-progress-text">
-                Every month, update this slider honestly. Small moves count.
-              </p>
             </div>
 
             <div className="goal-side">
               <label>
-                This month’s focus
+                This Month’s Focus
                 <textarea
-                  placeholder="What is this month's main focus?"
-                  value={goal.monthFocus || ""}
+                  value={activeBoard.goal.monthFocus}
                   onChange={(e) =>
                     handleGoalChange("monthFocus", e.target.value)
                   }
@@ -612,10 +496,9 @@ export default function VisionBoard() {
               </label>
 
               <label>
-                Today’s tiny action
+                Today's Tiny Action
                 <textarea
-                  placeholder="One small thing you can do today."
-                  value={goal.todayAction || ""}
+                  value={activeBoard.goal.todayAction}
                   onChange={(e) =>
                     handleGoalChange("todayAction", e.target.value)
                   }

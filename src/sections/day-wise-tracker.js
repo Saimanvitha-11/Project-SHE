@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./day-wise-tracker.css";
+import { supabase } from "../supabaseClient";
 
 const DayWiseTracker = () => {
   const daysOfWeek = [
@@ -12,35 +13,104 @@ const DayWiseTracker = () => {
     "Sunday",
   ];
 
-  const [selectedDay, setSelectedDay] = useState("Monday");
-  const [taskInput, setTaskInput] = useState("");
-  const [tasks, setTasks] = useState(
-    daysOfWeek.reduce((acc, day) => ({ ...acc, [day]: [] }), {})
+  const emptyTaskStructure = daysOfWeek.reduce(
+    (acc, day) => ({ ...acc, [day]: [] }),
+    {}
   );
 
+  const [tasks, setTasks] = useState(emptyTaskStructure);
+  const [selectedDay, setSelectedDay] = useState("Monday");
+  const [taskInput, setTaskInput] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState(null);
+
+  /* ---------------- FETCH USER SESSION ---------------- */
+  useEffect(() => {
+    const getUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (data?.user) {
+        setUserId(data.user.id);
+        loadTasks(data.user.id);
+      }
+    };
+    getUser();
+  }, []);
+
+  /* ---------------- LOAD TASKS FROM SUPABASE ---------------- */
+  const loadTasks = async (uid) => {
+    setLoading(true);
+
+    const { data, error } = await supabase
+      .from("day_wise_tasks")
+      .select("tasks")
+      .eq("user_id", uid)
+      .single();
+
+    if (error && error.code !== "PGRST116") {
+      console.error(error);
+    }
+
+    // If no entry yet → create one
+    if (!data) {
+      await supabase.from("day_wise_tasks").insert({
+        user_id: uid,
+        tasks: emptyTaskStructure,
+      });
+
+      setTasks(emptyTaskStructure);
+    } else {
+      setTasks(data.tasks);
+    }
+
+    setLoading(false);
+  };
+
+  /* ---------------- SAVE TASKS TO SUPABASE ---------------- */
+  const saveTasks = async (updatedTasks) => {
+    setTasks(updatedTasks);
+
+    await supabase
+      .from("day_wise_tasks")
+      .update({
+        tasks: updatedTasks,
+        updated_at: new Date(),
+      })
+      .eq("user_id", userId);
+  };
+
+  /* ---------------- ADD TASK ---------------- */
   const handleAddTask = () => {
     if (!taskInput.trim()) return;
-    setTasks((prev) => ({
-      ...prev,
+
+    const updated = {
+      ...tasks,
       [selectedDay]: [
-        ...prev[selectedDay],
+        ...tasks[selectedDay],
         { text: taskInput.trim(), done: false },
       ],
-    }));
+    };
+
+    saveTasks(updated);
     setTaskInput("");
   };
 
+  /* ---------------- TOGGLE TASK ---------------- */
   const handleToggle = (day, index) => {
-    const updated = [...tasks[day]];
-    updated[index].done = !updated[index].done;
-    setTasks((prev) => ({ ...prev, [day]: updated }));
+    const updated = { ...tasks };
+    updated[day][index].done = !updated[day][index].done;
+
+    saveTasks(updated);
   };
 
+  /* ---------------- DELETE TASK ---------------- */
   const handleDelete = (day, index) => {
-    const updated = [...tasks[day]];
-    updated.splice(index, 1);
-    setTasks((prev) => ({ ...prev, [day]: updated }));
+    const updated = { ...tasks };
+    updated[day].splice(index, 1);
+
+    saveTasks(updated);
   };
+
+  if (loading) return <p>Loading your tasks... 💗</p>;
 
   return (
     <div className="tracker-container">

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./journalingPage.css";
+import { supabase } from "../supabaseClient";
 
 const JournalingPage = () => {
   const [tone, setTone] = useState("");
@@ -8,45 +9,7 @@ const JournalingPage = () => {
   const [journalHistory, setJournalHistory] = useState([]);
   const [savedMessage, setSavedMessage] = useState("");
   const [selectedEntry, setSelectedEntry] = useState(null);
-  const [editingIndex, setEditingIndex] = useState(null);
-
-  const handleSave = () => {
-    if (!date || !tone || !entry.trim()) {
-      setSavedMessage("Please fill all fields.");
-      return;
-    }
-
-    const newEntry = { date, tone, entry };
-
-    if (editingIndex !== null) {
-      const updatedHistory = [...journalHistory];
-      updatedHistory[editingIndex] = newEntry;
-      setJournalHistory(updatedHistory);
-      setSavedMessage("Journal entry updated!");
-      setEditingIndex(null);
-    } else {
-      setJournalHistory([newEntry, ...journalHistory]);
-      setSavedMessage("Journal entry saved!");
-    }
-
-    setTone("");
-    setEntry("");
-    setDate("");
-  };
-
-  const handleEntryClick = (index) => {
-    setSelectedEntry(journalHistory[index]);
-  };
-
-  const handleEdit = (index) => {
-    const entryToEdit = journalHistory[index];
-    setTone(entryToEdit.tone);
-    setEntry(entryToEdit.entry);
-    setDate(entryToEdit.date);
-    setEditingIndex(index);
-    setSelectedEntry(null);
-    setSavedMessage("Editing entry...");
-  };
+  const [editingId, setEditingId] = useState(null);
 
   const tones = [
     "Happy",
@@ -58,16 +21,105 @@ const JournalingPage = () => {
     "Grateful",
   ];
 
+  // ----------------------------------
+  // FETCH ALL JOURNAL ENTRIES
+  // ----------------------------------
+  const fetchEntries = async () => {
+    const user = await supabase.auth.getUser();
+    if (!user.data.user) return;
+
+    const { data, error } = await supabase
+      .from("journals") // <<---- FIXED TABLE NAME
+      .select("*")
+      .eq("user_id", user.data.user.id)
+      .order("created_at", { ascending: false });
+
+    if (!error) {
+      setJournalHistory(data);
+    }
+  };
+
+  useEffect(() => {
+    fetchEntries();
+  }, []);
+
+  // ----------------------------------
+  // SAVE OR UPDATE ENTRY
+  // ----------------------------------
+  const handleSave = async () => {
+    if (!date || !tone || !entry.trim()) {
+      setSavedMessage("Please fill all fields.");
+      return;
+    }
+
+    const user = await supabase.auth.getUser();
+    if (!user.data.user) return;
+
+    const payload = {
+      user_id: user.data.user.id,
+      date,
+      tone,
+      entry,
+    };
+
+    let response;
+
+    if (editingId) {
+      // UPDATE
+      response = await supabase
+        .from("journals") // <<---- FIXED TABLE NAME
+        .update(payload)
+        .eq("id", editingId);
+
+      setSavedMessage("Journal entry updated!");
+    } else {
+      // INSERT
+      response = await supabase
+        .from("journals") // <<---- FIXED TABLE NAME
+        .insert(payload);
+
+      setSavedMessage("Journal entry saved!");
+    }
+
+    if (!response.error) {
+      setTone("");
+      setEntry("");
+      setDate("");
+      setEditingId(null);
+      fetchEntries();
+    }
+  };
+
+  // ----------------------------------
+  // CLICK ENTRY TO PREVIEW
+  // ----------------------------------
+  const handleEntryClick = (entryObj) => {
+    setSelectedEntry(entryObj);
+  };
+
+  // ----------------------------------
+  // EDIT ENTRY
+  // ----------------------------------
+  const handleEdit = (entryObj) => {
+    setTone(entryObj.tone);
+    setEntry(entryObj.entry);
+    setDate(entryObj.date);
+    setEditingId(entryObj.id);
+    setSelectedEntry(null);
+    setSavedMessage("Editing entry...");
+  };
+
   return (
     <div className="journaling-container">
       <div className="journaling-card">
         <h1>Dear Diary ✨</h1>
+
         <input
           type="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
-          placeholder="Date"
         />
+
         <div className="tone-selector">
           {tones.map((t) => (
             <button
@@ -79,33 +131,38 @@ const JournalingPage = () => {
             </button>
           ))}
         </div>
+
         <textarea
           value={entry}
           onChange={(e) => setEntry(e.target.value)}
           placeholder="Write your heart out..."
         />
+
         <button onClick={handleSave}>
-          {editingIndex !== null ? "Update Entry" : "Save Entry"}
+          {editingId ? "Update Entry" : "Save Entry"}
         </button>
+
         {savedMessage && <p className="saved-message">{savedMessage}</p>}
       </div>
 
       <div className="journal-history">
         <h2>📖 Past Journal Entries</h2>
-        {journalHistory.map((item, index) => (
+
+        {journalHistory.map((item) => (
           <div
             className="history-item"
-            key={index}
-            onClick={() => handleEntryClick(index)}
+            key={item.id}
+            onClick={() => handleEntryClick(item)}
           >
             <span>
               {item.date} — {item.tone}
             </span>
+
             <button
               className="edit-button"
               onClick={(e) => {
                 e.stopPropagation();
-                handleEdit(index);
+                handleEdit(item);
               }}
             >
               Edit

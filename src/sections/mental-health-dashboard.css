@@ -1,0 +1,84 @@
+.mental-dashboard-wrapper {
+  background: linear-gradient(to bottom right, #fff5f7, #f8bbd0, #f489ae);
+  padding: 40px;
+  border-radius: 30px;
+  margin: 40px auto;
+  max-width: 1100px;
+  box-shadow: 0 10px 40px rgba(255, 180, 210, 0.4);
+}
+
+.mental-title {
+  font-size: 3rem;
+  color: #7a1b4d;
+  text-align: center;
+  margin-bottom: 30px;
+  font-family: "Parisienne", cursive;
+}
+
+.mental-input-card {
+  background: rgba(255, 255, 255, 0.4);
+  padding: 25px;
+  border-radius: 25px;
+  box-shadow: 0 4px 20px rgba(255, 140, 160, 0.3);
+  margin-bottom: 40px;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+}
+
+.emoji-row {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: 15px 0;
+}
+
+.emoji-btn {
+  font-size: 2rem;
+  background: #fff;
+  border-radius: 12px;
+  border: 2px solid #d17a9c;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.emoji-btn.selected {
+  background: #ffe4f0;
+  transform: scale(1.1);
+  border-color: #b2176e;
+}
+
+.stress-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.stress-btn {
+  padding: 10px 18px;
+  background: #fff;
+  border-radius: 20px;
+  border: 2px solid #d17a9c;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.stress-btn.selected {
+  background: #ffe4f0;
+  transform: scale(1.1);
+}
+
+.charts-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 25px;
+}
+
+.chart-card {
+  background: rgba(255, 255, 255, 0.4);
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(255, 150, 175, 0.3);
+  text-align: center;
+}

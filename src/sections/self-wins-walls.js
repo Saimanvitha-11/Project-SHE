@@ -1,23 +1,71 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./self-wins-wall.css";
+import { supabase } from "../supabaseClient";
 
 export default function SelfWinsWall() {
   const [wins, setWins] = useState([]);
   const [newWin, setNewWin] = useState("");
 
-  const addWin = () => {
-    if (newWin.trim() === "") return;
-    const winObj = {
-      text: newWin,
-      date: new Date().toLocaleDateString(),
-      tilt: Math.random() * 10 - 5 // random tilt between -5° to 5°
-    };
-    setWins([...wins, winObj]);
-    setNewWin("");
+  // ------------------------------
+  // FETCH ALL WINS ON PAGE LOAD
+  // ------------------------------
+  const fetchWins = async () => {
+    const user = await supabase.auth.getUser();
+    if (!user.data.user) return;
+
+    const { data, error } = await supabase
+      .from("self_wins")
+      .select("*")
+      .eq("user_id", user.data.user.id)
+      .order("created_at", { ascending: false });
+
+    if (!error) setWins(data);
   };
 
-  const deleteWin = (indexToDelete) => {
-    setWins(wins.filter((_, index) => index !== indexToDelete));
+  useEffect(() => {
+    fetchWins();
+  }, []);
+
+  // ------------------------------
+  // ADD A WIN (SAVE TO SUPABASE)
+  // ------------------------------
+  const addWin = async () => {
+    if (newWin.trim() === "") return;
+
+    const user = await supabase.auth.getUser();
+    if (!user.data.user) return;
+
+    const payload = {
+      user_id: user.data.user.id,
+      text: newWin,
+      category: "general", // default category
+      date: new Date().toISOString().split("T")[0],
+      tilt: Math.random() * 10 - 5,
+    };
+
+    const { data, error } = await supabase
+      .from("self_wins")
+      .insert(payload)
+      .select();
+
+    if (!error && data) {
+      setWins([data[0], ...wins]); // update UI
+      setNewWin("");
+    }
+  };
+
+  // ------------------------------
+  // DELETE A WIN
+  // ------------------------------
+  const deleteWin = async (id) => {
+    const { error } = await supabase
+      .from("self_wins")
+      .delete()
+      .eq("id", id);
+
+    if (!error) {
+      setWins(wins.filter((w) => w.id !== id));
+    }
   };
 
   return (
@@ -38,23 +86,31 @@ export default function SelfWinsWall() {
       </div>
 
       <div className="wins-grid">
-        {wins.map((win, index) => (
+        {wins.map((win) => (
           <div
-            key={index}
+            key={win.id}
             className="win-card"
-            style={{ transform: `rotate(${win.tilt}deg)` }}
+            style={{
+              transform: `rotate(${win.tilt ?? 0}deg)`
+            }}
           >
             <span className="pin">📌</span>
+
             <button
               className="delete-btn"
-              onClick={() => deleteWin(index)}
-              title="Remove this win"
+              onClick={() => deleteWin(win.id)}
             >
               ✖
             </button>
+
             <div className="polaroid">
               <p className="win-text">{win.text}</p>
-              <span className="win-date">{win.date}</span>
+
+              <span className="win-date">
+                {win.date
+                  ? new Date(win.date).toLocaleDateString()
+                  : new Date(win.created_at).toLocaleDateString()}
+              </span>
             </div>
           </div>
         ))}
