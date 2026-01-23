@@ -52,7 +52,7 @@ function ProjectSHEApp() {
   const menuRef = useRef(null);
 
   const sectionRefs = useRef([]);
-  const totalSections = 16;
+  const totalSections = 12;
 
   if (sectionRefs.current.length !== totalSections) {
     sectionRefs.current = Array.from({ length: totalSections }, () =>
