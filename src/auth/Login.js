@@ -78,7 +78,7 @@ const Login = () => {
         </button>
 
         <p className="auth-switch">
-          New here? <a href="/Register.js">Create an account</a>
+          New here? <a href="/register">Create an account</a>
         </p>
       </div>
     </div>
