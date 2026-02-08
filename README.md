@@ -172,4 +172,3 @@ This project is licensed under the **MIT License**.
 Created by  
 **Saimanvitha Chevuru**  
 🔗 https://github.com/Saimanvitha-11
-🌸 Live App: https://project-she-app.netlify.app
