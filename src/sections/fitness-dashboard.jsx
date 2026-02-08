@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { supabase } from "../supabaseClient";
 import "./fitness-dashboard.css";
 
@@ -22,12 +22,8 @@ const FitnessDashboard = () => {
 
   const today = days[new Date().getDay()];
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   // ---------------- FETCH DATA ----------------
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -45,9 +41,13 @@ const FitnessDashboard = () => {
       setWater(data.water || "");
       setSleep(data.sleep || "");
       setMood(data.mood || "😊");
-      setWeeklySteps(data.weekly_steps || weeklySteps);
+      setWeeklySteps((prev) => data.weekly_steps || prev);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   // ---------------- SAVE DATA ----------------
   const saveData = async () => {

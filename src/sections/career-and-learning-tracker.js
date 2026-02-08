@@ -162,6 +162,10 @@ export default function CareerAndLearningTracker() {
       .insert(payload)
       .select();
 
+    if (error) {
+      console.error(error);
+    }
+
     if (data) {
       const newLog = {
         day: `Day ${data[0].day_number}`,

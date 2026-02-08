@@ -59,6 +59,7 @@ const BuiltInSpotify = () => {
 
         <div className="vibe-frame">
           <iframe
+            title="spotify-player-built-in"
             src={playlists[selected]}
             width="100%"
             height="352"

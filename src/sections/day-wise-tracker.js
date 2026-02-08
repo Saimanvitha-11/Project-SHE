@@ -1,43 +1,31 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./day-wise-tracker.css";
 import { supabase } from "../supabaseClient";
 
+const DAYS_OF_WEEK = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
+
+const EMPTY_TASK_STRUCTURE = DAYS_OF_WEEK.reduce(
+  (acc, day) => ({ ...acc, [day]: [] }),
+  {}
+);
+
 const DayWiseTracker = () => {
-  const daysOfWeek = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
-  ];
-
-  const emptyTaskStructure = daysOfWeek.reduce(
-    (acc, day) => ({ ...acc, [day]: [] }),
-    {}
-  );
-
-  const [tasks, setTasks] = useState(emptyTaskStructure);
+  const [tasks, setTasks] = useState(EMPTY_TASK_STRUCTURE);
   const [selectedDay, setSelectedDay] = useState("Monday");
   const [taskInput, setTaskInput] = useState("");
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState(null);
 
-  /* ---------------- FETCH USER SESSION ---------------- */
-  useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      if (data?.user) {
-        setUserId(data.user.id);
-        loadTasks(data.user.id);
-      }
-    };
-    getUser();
-  }, []);
-
   /* ---------------- LOAD TASKS FROM SUPABASE ---------------- */
-  const loadTasks = async (uid) => {
+  const loadTasks = useCallback(async (uid) => {
     setLoading(true);
 
     const { data, error } = await supabase
@@ -54,16 +42,28 @@ const DayWiseTracker = () => {
     if (!data) {
       await supabase.from("day_wise_tasks").insert({
         user_id: uid,
-        tasks: emptyTaskStructure,
+        tasks: EMPTY_TASK_STRUCTURE,
       });
 
-      setTasks(emptyTaskStructure);
+      setTasks(EMPTY_TASK_STRUCTURE);
     } else {
       setTasks(data.tasks);
     }
 
     setLoading(false);
-  };
+  }, []);
+
+  /* ---------------- FETCH USER SESSION ---------------- */
+  useEffect(() => {
+    const getUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (data?.user) {
+        setUserId(data.user.id);
+        loadTasks(data.user.id);
+      }
+    };
+    getUser();
+  }, [loadTasks]);
 
   /* ---------------- SAVE TASKS TO SUPABASE ---------------- */
   const saveTasks = async (updatedTasks) => {
@@ -117,7 +117,7 @@ const DayWiseTracker = () => {
       <h2 className="tracker-title">📅 Weekly Day-wise Task Tracker</h2>
 
       <div className="day-selector">
-        {daysOfWeek.map((day) => (
+        {DAYS_OF_WEEK.map((day) => (
           <button
             key={day}
             className={`day-btn ${selectedDay === day ? "active" : ""}`}
@@ -139,7 +139,7 @@ const DayWiseTracker = () => {
       </div>
 
       <div className="task-grid">
-        {daysOfWeek.map((day) => (
+        {DAYS_OF_WEEK.map((day) => (
           <div key={day} className="task-card">
             <h4>{day}</h4>
             {tasks[day].length > 0 ? (

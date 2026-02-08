@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./period-tracker.css";
 import { supabase } from "../supabaseClient";
 
@@ -124,7 +124,7 @@ export default function PeriodTracker() {
   /* ==============================
      SAVE SETTINGS (Auto Sync)
   ============================== */
-  const saveSettings = async () => {
+  const saveSettings = useCallback(async () => {
     const user = await supabase.auth.getUser();
     if (!user.data.user) return;
 
@@ -135,11 +135,12 @@ export default function PeriodTracker() {
       menses_length: mensesLength,
       updated_at: new Date(),
     });
-  };
+  }, [lastPeriodDate, cycleLength, mensesLength]);
 
   useEffect(() => {
-    if (lastPeriodDate) saveSettings();
-  }, [lastPeriodDate, cycleLength, mensesLength]);
+    if (!lastPeriodDate) return;
+    saveSettings();
+  }, [lastPeriodDate, saveSettings]);
 
   /* ==============================
      SAVE SYMPTOMS
