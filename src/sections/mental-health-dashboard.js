@@ -122,7 +122,8 @@ export default function MentalHealthDashboard() {
 
       {/* INPUT SECTION */}
       <div className="mental-input-card">
-        <h2>Daily Check-in 🌸</h2>
+        <h2 className="daily-checkin-title">Daily Check-in 🌸</h2>
+
 
         {/* MOOD */}
         <p>How are you feeling?</p>

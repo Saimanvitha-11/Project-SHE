@@ -201,17 +201,18 @@ export default function PeriodTracker() {
   const currentPhaseLabel = PHASES[phaseIndex].label;
 
   return (
-    <div
-      className="period-tracker-container"
-      style={{ background: PHASES[phaseIndex].color }}
-    >
+  <div
+    className="period-tracker-container"
+    data-phase={PHASES[phaseIndex].key}
+    style={{ background: PHASES[phaseIndex].color }}
+  >
+
       {/* LEFT SIDE */}
       <div className="period-top">
         <div className="left">
-          <h2 style={{ color: PHASES[phaseIndex].textColor }}>
+          <h1 className="mental-title">
             🌙 Period Tracker — {currentPhaseLabel}
-          </h2>
-
+          </h1> 
           <p className="subtitle" style={{ color: PHASES[phaseIndex].textColor }}>
             A gentle guardian for your cycle — private & compassionate.
           </p>

@@ -13,7 +13,7 @@ const Register = () => {
     setMessage("");
 
     // NEW SUPABASE V3 SIGN UP SYNTAX
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {

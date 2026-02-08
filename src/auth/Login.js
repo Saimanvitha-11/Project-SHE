@@ -11,7 +11,7 @@ const Login = () => {
     setError("");
 
     // Correct Supabase V3 login
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -78,7 +78,7 @@ const Login = () => {
         </button>
 
         <p className="auth-switch">
-          New here? <a href="/register">Create an account</a>
+          New here? <a href="/Register.js">Create an account</a>
         </p>
       </div>
     </div>

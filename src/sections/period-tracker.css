@@ -11,6 +11,14 @@
   gap: 1.8rem;
   box-sizing: border-box;
 }
+.mental-title,
+.period-title {
+  color: #ffe6ef;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+}
+
 
 /* ---------------- TOP LAYOUT ---------------- */
 
@@ -135,7 +143,12 @@
   text-align: center;
 }
 
-.phase-label { font-weight: 700; color: #cc2e74; }
+.phase-label {
+  font-weight: 700;
+  color: inherit;
+  opacity: 0.9;
+}
+
 .phase-key { font-size: 0.8rem; color: #8a5a6f; }
 
 /* ---------------- LOWER CARDS ---------------- */
@@ -185,10 +198,11 @@
 
 .symptom-card h4,
 .phase-card h3 {
-  color: #4b1f33;
+  color: rgba(75, 31, 51, 0.9);
   font-weight: 700;
   text-align: center;
   margin-bottom: 0.8rem;
+  transition: color 0.4s ease;
 }
 
 .sym-row {
@@ -285,3 +299,39 @@
 .subtitle { color: rgba(255,255,255,0.85); margin-top: 0.2rem; }
 .muted { color: rgba(92,74,74,0.6); font-style: italic; }
 .predict-small { margin-top: 0.6rem; color: #8a5a6f; font-size: 0.9rem; }
+
+/* ================= PHASE-AWARE MAIN TITLE ================= */
+
+.mental-title {
+  transition: color 0.6s ease, text-shadow 0.6s ease;
+}
+
+/* Moon / Menstrual */
+.period-tracker-container[data-phase="menstruation"] .mental-title {
+  color: #f6e9ff !important;
+  text-shadow: 0 0 20px rgba(246, 233, 255, 0.6);
+}
+
+/* Follicular */
+.period-tracker-container[data-phase="follicular"] .mental-title {
+  color: #b03060 !important;
+  text-shadow: 0 0 18px rgba(176, 48, 96, 0.45);
+}
+
+/* Ovulation */
+.period-tracker-container[data-phase="ovulation"] .mental-title {
+  color: #c05621 !important;
+  text-shadow: 0 0 18px rgba(192, 86, 33, 0.45);
+}
+
+/* Luteal */
+.period-tracker-container[data-phase="luteal"] .mental-title {
+  color: #6b4c9a !important;
+  text-shadow: 0 0 18px rgba(107, 76, 154, 0.45);
+}
+
+/* Extra contrast safety for dark phase */
+.period-tracker-container[data-phase="menstruation"] .phase-card,
+.period-tracker-container[data-phase="menstruation"] .symptom-card {
+  background: rgba(255, 255, 255, 0.94);
+}

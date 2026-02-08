@@ -1,13 +1,16 @@
 .fit-wrapper {
-  background: linear-gradient(to bottom right, #ffe5f1, #ffbdd4, #f489ae);
-  min-height: 100vh;
+    background: linear-gradient(to bottom right, #fff5f7, #f8bbd0, #f489ae);
   padding: 40px;
+  border-radius: 30px;
+  margin: 40px auto;
+  max-width: 1100px;
+  box-shadow: 0 10px 40px rgba(255, 180, 210, 0.4);
 }
 
 .fit-title {
   text-align: center;
-  font-size: 3rem;
-  color: white;
+  font-size: 2.6rem;
+  color: #791344;
   font-weight: 700;
   margin-bottom: 40px;
   text-shadow: 0 4px 12px rgba(255, 180, 200, 0.5);
@@ -36,7 +39,7 @@
 
 .fit-card-title {
   text-align: center;
-  color: #7d2352;
+  color: #791344 !important;
   font-weight: 700;
   margin-bottom: 25px;
   font-size: 1.6rem;
@@ -148,10 +151,11 @@ select {
   border-radius: 25px;
   text-align: center;
   box-shadow: 0 10px 30px rgba(255, 180, 200, 0.35);
+  color: #791344 !important;
 }
 
 .fit-summary p {
   margin: 8px 0;
   font-size: 1.1rem;
-  color: #6a234f;
+  color: #791344 !important;
 }

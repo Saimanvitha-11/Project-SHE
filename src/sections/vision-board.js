@@ -17,7 +17,7 @@ export default function VisionBoard() {
 
   const [dragging, setDragging] = useState(null);
   const [drawMode, setDrawMode] = useState(false);
-  const [brushColor, setBrushColor] = useState("#cc2e74");
+  const [brushColor, setBrushColor] = useState("#791344");
   const [brushSize, setBrushSize] = useState(4);
   const [isEraser, setIsEraser] = useState(false);
 
@@ -90,10 +90,10 @@ export default function VisionBoard() {
 
   // Save whenever boards state changes
   useEffect(() => {
-    if (!activeBoardId) return;
-    const board = boards.find((b) => b.id === activeBoardId);
-    saveBoard(board);
-  }, [boards]);
+  if (!activeBoardId) return;
+  const board = boards.find((b) => b.id === activeBoardId);
+  saveBoard(board);
+}, [boards, activeBoardId]);
 
   const activeBoard = boards.find((b) => b.id === activeBoardId);
 
@@ -185,12 +185,18 @@ export default function VisionBoard() {
   // DOODLE MODE CANVAS
   // -------------------------------------------------------------------
   const getCanvasPos = (e) => {
-    const rect = canvasRef.current.getBoundingClientRect();
-    return {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    };
+  const canvas = canvasRef.current;
+  const rect = canvas.getBoundingClientRect();
+
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+
+  return {
+    x: (e.clientX - rect.left) * scaleX,
+    y: (e.clientY - rect.top) * scaleY,
   };
+};
+
 
   const startDrawing = (e) => {
     if (!drawMode || viewMode !== "board") return;
@@ -199,6 +205,10 @@ export default function VisionBoard() {
     const ctx = canvasRef.current.getContext("2d");
     ctx.beginPath();
     ctx.moveTo(x, y);
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
+    ctx.imageSmoothingEnabled = true;
+
   };
 
   const draw = (e) => {
@@ -284,7 +294,7 @@ export default function VisionBoard() {
       onMouseMove={onDrag}
       onMouseUp={stopDrag}
     >
-      <h3 className="vision-title">Vision Board</h3>
+      <h3 className="vision-title">🤍 Vision Board</h3>
       <p className="vision-sub">Dream it. Build it. See it come alive.</p>
 
       {/* MODE TOGGLE */}
@@ -376,7 +386,13 @@ export default function VisionBoard() {
         {/* BOARD MODE */}
         {viewMode === "board" && (
           <>
-            <canvas ref={canvasRef} className="vision-canvas" />
+            <canvas
+              ref={canvasRef}
+              className="vision-canvas"
+              width={boardRef.current?.offsetWidth}
+              height={boardRef.current?.offsetHeight}
+            />
+
             {activeBoard.items.map((item) => (
               <div
                 key={item.id}

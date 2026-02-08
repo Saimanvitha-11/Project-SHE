@@ -17,9 +17,7 @@
   font-size: 2.2rem;
   font-weight: 500;
   margin-bottom: 0.4rem;
-  background: rgb(108, 106, 106);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #791344 !important;
   letter-spacing: 1px;
 }
 

@@ -24,7 +24,7 @@
 .fitness-chart-title {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #7e2f55;
+  color: #7e2f55 !important;
   margin-bottom: 16px;
   text-align: center;
   letter-spacing: 1px;
@@ -32,6 +32,7 @@
 
 .fitness-chart-emoji {
   font-size: 1.4rem;
+  color: #791344;
 }
 
 .fitness-chart-content {

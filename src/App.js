@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef } from "react";
 import "./styles.css";
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
@@ -22,8 +22,6 @@ import CareerAndLearningTracker from "./sections/career-and-learning-tracker.js"
 import PeriodTracker from "./sections/period-tracker.js";
 import VisionBoard from "./sections/vision-board";
 
-
-
 /* ---------------- PROTECTED ROUTE ---------------- */
 function ProtectedRoute({ children }) {
   const [session, setSession] = React.useState(null);
@@ -42,7 +40,7 @@ function ProtectedRoute({ children }) {
 
   if (loading) return null;
 
-  // Allow unconfirmed users too
+  
   return session ? children : <Navigate to="/login" replace />;
 }
 
@@ -61,31 +59,20 @@ function ProjectSHEApp() {
   }
 
   const sectionComponents = [
-    DayWiseTracker,
-  BuiltInSpotify,
-  FitnessDashboard,
-  MentalHealthDashboard,
-  JournalingPage,
-  AiAssistant,
-  MoodMirror,
-  SelfWinsWalls,
-  PersonalizedMotivationalReminders,
-  CareerAndLearningTracker,
-  PeriodTracker,
-  VisionBoard,
-  ];
+  { component: DayWiseTracker, title: "Day Wise Tracker" },
+  { component: BuiltInSpotify, title: "Music Therapy" },
+  { component: FitnessDashboard, title: "Fitness Dashboard" },
+  { component: MentalHealthDashboard, title: "Mental Health Dashboard" },
+  { component: JournalingPage, title: "Journaling Space" },
+  { component: AiAssistant, title: "AI Assistant" },
+  { component: MoodMirror, title: "Mood Mirror" },
+  { component: SelfWinsWalls, title: "Self Wins Wall" },
+  { component: PersonalizedMotivationalReminders, title: "Motivational Reminders" },
+  { component: CareerAndLearningTracker, title: "Career & Learning Tracker" },
+  { component: PeriodTracker, title: "Period Tracker" },
+  { component: VisionBoard, title: "Vision Board" },
+];
 
-  const [showTopBtn, setShowTopBtn] = useState(true);
-
-  useEffect(() => {
-    const handleScrollVisibility = () => {
-      setShowTopBtn(true);
-    };
-
-    window.addEventListener("scroll", handleScrollVisibility);
-    return () =>
-      window.removeEventListener("scroll", handleScrollVisibility);
-  }, []);
 
   const handleScroll = () => {
     heroRef.current.classList.add("fade-out");
@@ -104,6 +91,13 @@ function ProjectSHEApp() {
   const goToMenu = () => {
     menuRef.current.scrollIntoView({ behavior: "smooth" });
   };
+
+  const handleLogout = async () => {
+  await supabase.auth.signOut();
+
+  // Replace history so back button won't work
+  window.location.replace("/login");
+};
 
   return (
     <div className="App">
@@ -150,37 +144,41 @@ function ProjectSHEApp() {
         <h2>My Healing & Growth Journey 🌸</h2>
 
         <div className="grid">
-          {sectionComponents.map((Component, i) => (
-            <div
-              key={i}
-              className="card"
-              onClick={() => scrollToSection(i)}
-            >
-              {Component.name.replace(/([A-Z])/g, " $1").trim()}
-            </div>
-          ))}
-        </div>
+  {sectionComponents.map(({ title }, i) => (
+    <div
+      key={i}
+      className="card"
+      onClick={() => scrollToSection(i)}
+    >
+      {title}
+    </div>
+  ))}
+</div>
+
 
         {/* SECTION COMPONENTS */}
-        {sectionComponents.map((Component, i) => (
-          <div
-            key={i}
-            ref={sectionRefs.current[i]}
-            style={{ margin: "3rem 0" }}
-          >
-            <Component />
-          </div>
-        ))}
+        {sectionComponents.map(({ component: Component }, i) => (
+  <div
+    key={i}
+    ref={sectionRefs.current[i]}
+    style={{ margin: "3rem 0" }}
+  >
+    <Component />
+  </div>
+))}
+
       </section>
 
       {/* ALWAYS VISIBLE */}
       <button className="back-to-menu" onClick={goToMenu}>
         ⬆ Menu
       </button>
+      <button className="logout-btn" onClick={handleLogout}>
+        🚪 Logout
+      </button>
     </div>
   );
 }
-
 
 /* ---------------- ROUTER WRAPPER ---------------- */
 export default function App() {
