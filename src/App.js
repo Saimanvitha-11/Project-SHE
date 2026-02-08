@@ -9,18 +9,18 @@ import Login from "./auth/Login";
 import Register from "./auth/Register";
 
 // Import Section Components
-import DayWiseTracker from "./sections/day-wise-tracker";
+import DayWiseTracker from "./sections/day-wise-tracker.js";
 import BuiltInSpotify from "./sections/built-in-spotify.js";
-import FitnessDashboard from "./sections/fitness-dashboard";
-import MentalHealthDashboard from "./sections/mental-health-dashboard";
-import JournalingPage from "./sections/journaling-page";
-import AiAssistant from "./sections/ai-assistant";
-import MoodMirror from "./sections/mood-mirror";
-import SelfWinsWalls from "./sections/self-wins-walls";
+import FitnessDashboard from "./sections/fitness-dashboard.jsx";
+import MentalHealthDashboard from "./sections/mental-health-dashboard.js";
+import JournalingPage from "./sections/journaling-page.js";
+import AiAssistant from "./sections/ai-assistant.js";
+import MoodMirror from "./sections/mood-mirror.js";
+import SelfWinsWalls from "./sections/self-wins-walls.js";
 import PersonalizedMotivationalReminders from "./sections/personalized-motivational-reminders.js";
 import CareerAndLearningTracker from "./sections/career-and-learning-tracker.js";
 import PeriodTracker from "./sections/period-tracker.js";
-import VisionBoard from "./sections/vision-board";
+import VisionBoard from "./sections/vision-board.js";
 
 /* ---------------- PROTECTED ROUTE ---------------- */
 function ProtectedRoute({ children }) {
@@ -49,15 +49,6 @@ function ProjectSHEApp() {
   const heroRef = useRef(null);
   const menuRef = useRef(null);
 
-  const sectionRefs = useRef([]);
-  const totalSections = 16;
-
-  if (sectionRefs.current.length !== totalSections) {
-    sectionRefs.current = Array.from({ length: totalSections }, () =>
-      React.createRef()
-    );
-  }
-
   const sectionComponents = [
   { component: DayWiseTracker, title: "Day Wise Tracker" },
   { component: BuiltInSpotify, title: "Music Therapy" },
@@ -72,6 +63,13 @@ function ProjectSHEApp() {
   { component: PeriodTracker, title: "Period Tracker" },
   { component: VisionBoard, title: "Vision Board" },
 ];
+
+// Always match refs to number of components
+const sectionRefs = useRef([]);
+
+if (sectionRefs.current.length !== sectionComponents.length) {
+  sectionRefs.current = sectionComponents.map(() => React.createRef());
+}
 
 
   const handleScroll = () => {
