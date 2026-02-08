@@ -4,6 +4,13 @@
 
 ---
 
+## 🌸 Live Demo
+
+✨ Project SHE is deployed and live here:  
+🔗 **https://project-she-app.netlify.app**
+
+---
+
 ## Overview
 
 Project SHE is a deeply personal and evolving wellness platform built to support healing, structure, and self-awareness.
@@ -24,7 +31,7 @@ This project is actively evolving and will continue to grow with new features an
 
 ---
 
-## ✨ Core Features
+## Core Features
 
 ### Mind & Emotion
 - **Mood Mirror:** Track daily feelings with emojis + emotional patterns  
@@ -70,45 +77,46 @@ Designed intentionally to feel calming, inspiring, and safe.
 
 ---
 
-## Tech Stack
+## 🛠 Tech Stack
 
 ### Frontend
 - React.js  
 - JavaScript  
-- Custom CSS (hand-crafted UI components)  
+- Custom CSS (hand-crafted UI components)
 
-### APIs
+### Backend & Database
+- **Supabase** (Authentication + Database + Cloud Storage)
+
+### Deployment
+- **Netlify** (Frontend hosting + Continuous Deployment)
+
+### APIs & Integrations
 - OpenAI API (for AI Assistant — user must provide key)  
-- Spotify Embed Player (no backend required)  
-
-### Planned Backend Features
-- Node.js / Express server  
-- User authentication  
-- Cloud saving of journal entries, mood logs, and vision board data  
-- AI history + profile memory  
+- Spotify Embed Player (no backend required)
 
 ---
 
-##  Current Progress
+## Current Progress
 
 Project SHE is in active development.
 
-###  Recently Completed
+### Recently Completed
 - Full UI revamp (floating hero, glowing cards, aesthetic interactions)  
 - New navigation system with **Back to Menu** floating button  
 - Entire Vision Board redesign  
 - Stabilized multi-component scroll navigation  
 - Organized all features into **12+ unique sections**  
+- Integrated **Supabase backend** for future persistent saving  
 
-###  Coming Next
-- Backend for persistent data  
-- Local storage as interim saving solution  
+### Coming Next
+- Cloud saving for journal + mood + vision board  
 - AI mentor improvements  
 - Export tools (PDF journals, vision board exports)  
+- Enhanced personalization + user profiles  
 
 ---
 
-##  Motivation
+## Motivation
 
 Project SHE was born in a moment of emotional rebuild.  
 A place to heal, reflect, structure life, and befriend your future self.
@@ -118,7 +126,6 @@ A place to heal, reflect, structure life, and befriend your future self.
 — **Saimanvitha Chevuru**
 
 ---
-
 
 ## Setup Instructions
 
@@ -164,4 +171,5 @@ This project is licensed under the **MIT License**.
 
 Created by  
 **Saimanvitha Chevuru**  
-https://github.com/Saimanvitha-11
+🔗 https://github.com/Saimanvitha-11
+🌸 Live App: https://project-she-app.netlify.app
