@@ -27,7 +27,6 @@ What began as a simple daily tracker has grown into a full self-care ecosystem i
 
 Every component is hand-designed with a soft, feminine UI and calming interactions — built as a safe space for rebuilding confidence, discipline, and emotional clarity.
 
-This project is actively evolving and will continue to grow with new features and backend support.
 
 ---
 
