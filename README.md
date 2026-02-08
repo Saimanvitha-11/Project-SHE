@@ -108,12 +108,6 @@ Project SHE is in active development.
 - Organized all features into **12+ unique sections**  
 - Integrated **Supabase backend** for future persistent saving  
 
-### Coming Next
-- Cloud saving for journal + mood + vision board  
-- AI mentor improvements  
-- Export tools (PDF journals, vision board exports)  
-- Enhanced personalization + user profiles  
-
 ---
 
 ## Motivation
